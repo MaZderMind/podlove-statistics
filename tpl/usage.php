@@ -1,8 +1,7 @@
 Logfile-Processor of the Podcast Log-Analyzer
 
 Usage:
-  Fitst Import: php <?=$exe?> --import access.log access.log.1 access.log.2
-  Updates:      php <?=$exe?> access.log access.log.1
+  php <?=$exe?> access.log access.log.1 [access.log.2 access.log.3 ...]
 
 <? if(!$verbose): ?>
 To get more information about possible config options call with --help.
@@ -20,5 +19,10 @@ The following settings can be configured:
  - more
  - coming
  - soon
+
+The Logfile-Processor returns the following error codes:
+ 0 = everything's fine, all files processed
+ 1 = invalid or unparsable command line or config-files
+ 2 = IO-Error with one of the files
 <? endif ?>
 
