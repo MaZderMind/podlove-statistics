@@ -80,28 +80,34 @@ if(count($files) == 0)
 	exit(1);
 }
 
+// last status
+$status = array();
+
 // conenct to the database
 $db = new PDO($config['db']);
 
 // read the last status information
 $stm = $db->query('SELECT k, v FROM status', PDO::FETCH_ASSOC);
-$status = array();
 
 // check for a fresh database
-if($stm)
+$import = (bool)$stm;
+if($import)
 {
+	// yup, that database is maiden
+	// create the status table and 
+	echo "initiating empty database\n";
+	$sql = file_get_contents('res/000-before.sql');
+	$db->exec($sql);
+
+	echo "running in import-mode\n";
+}
+else
+{
+	// read last status
 	foreach($stm as $row)
 	{
 		$status[$row['k']] = $row['v'];
 	}
-}
-else
-{
-	// yup, that database is maiden
-	// create the status table and 
-	echo "initiating empty database...\n";
-	$sql = file_get_contents('res/scheme.sql');
-	$db->exec($sql);
 }
 
 
@@ -122,8 +128,15 @@ foreach($files as $file)
 	while($line = fgets($fp, $config['linelen']))
 	{
 		// parse it
-		if(preg_match('@^([^ ]+) ([^ ]+) ([^ ]+) \[([^\]]+)\] "([^"]+)" ([^ ]+) ([^ ]+)(?: "([^"]+)" "([^"]+)")?@', $line, $m)) {
+		if(preg_match('@^([^ ]+) ([^ ]+) ([^ ]+) \[([^\]]+)\] "([^"]+)" ([^ ]+) ([^ ]+)(?: "([^"]+)" "([^"]+)")?@', $line, $m))
+		{
+			// when we're in import-mode, ignore the timestamp
+			if(!$import)
+			{
+				// TODO: compare timestamps
+			}
 
+			// TODO: import line
 		}
 
 		// debug
