@@ -108,13 +108,27 @@ else
 // give some hope while we're busy with the files
 echo "scanning ".count($files)." file(s)\n";
 
+// for each file
 foreach($files as $file)
 {
+	// try to open it
 	$fp = @fopen($file, 'r');
 	if(!$fp)
 	{
 		error(2, 'unable to open file: '.$file);
 	}
 
-	
+	// scan it
+	while($line = fgets($fp, $config['linelen']))
+	{
+		// parse it
+		if(preg_match('@^([^ ]+) ([^ ]+) ([^ ]+) \[([^\]]+)\] "([^"]+)" ([^ ]+) ([^ ]+)(?: "([^"]+)" "([^"]+)")?@', $line, $m)) {
+
+		}
+
+		// debug
+		if($n++ == 3) break;
+	}
+
+	fclose($fp);
 }
