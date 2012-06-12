@@ -88,10 +88,10 @@ $db = new PDO($config['db']);
 
 // read the last status information
 $stm = $db->query('SELECT k, v FROM status', PDO::FETCH_ASSOC);
+$import = false;
 
 // check for a fresh database
-$import = (bool)$stm;
-if($import)
+if(!$stm)
 {
 	// yup, that database is maiden
 	// create the status table and 
@@ -100,6 +100,7 @@ if($import)
 	$db->exec($sql);
 
 	echo "running in import-mode\n";
+	$import = true;
 }
 else
 {
@@ -124,24 +125,46 @@ foreach($files as $file)
 		error(2, 'unable to open file: '.$file);
 	}
 
+	// when we're in import-mode, ignore the timestamp
+	if(!$import)
+	{
+		// TODO: do sophisticated timestamp checks
+	}
+
 	// scan it
 	while($line = fgets($fp, $config['linelen']))
 	{
 		// parse it
-		if(preg_match('@^([^ ]+) ([^ ]+) ([^ ]+) \[([^\]]+)\] "([^"]+)" ([^ ]+) ([^ ]+)(?: "([^"]+)" "([^"]+)")?@', $line, $m))
+		if(preg_match('@^([^ ]+) ([^ ]+) ([^ ]+) \[([^\]]+)\] "([^ ]+) ([^ ]+) ([^ ]+)" ([^ ]+) ([^ ]+)(?: "([^"]+)" "([^"]+)")?@', $line, $m))
 		{
+			// 0 = line
+			// 1 = ip
+			// 2 = ident
+			// 3 = user
+			// 4 = date
+			// 5 = http-method
+			// 6 = url
+			// 7 = http-version
+			// 8 = response
+			// 9 = size
+			// 10 = referer (opt.)
+			// 11 = agent (opt.)
+
 			// when we're in import-mode, ignore the timestamp
 			if(!$import)
 			{
 				// TODO: compare timestamps
 			}
 
-			// TODO: import line
+			// split the path up into episode & format
+			$path = pathinfo($m[6]);
+			print_r($path);
 		}
-
-		// debug
-		if($n++ == 3) break;
 	}
 
 	fclose($fp);
 }
+
+echo "finishing database (indexes and such)\n";
+$sql = file_get_contents('res/999-after.sql');
+$db->exec($sql);
