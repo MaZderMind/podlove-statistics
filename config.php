@@ -13,6 +13,14 @@ $config['linelen'] = 1024;
 // analyze user names
 $config['processuser'] = false;
 
+// normalize all timestamps using this interval in seconds
+//  a value of 5 minutes instructs the processor to interpret
+//  all requests that happened in an interval of 5 minutes
+//  like they happened in the same moment.
+//  setting a higher value results in less granular but
+//  smaller and faster database.
+$config['timeinterval'] = 15*60; // 15 minutes
+
 // podcast file formatsm (copied from podlove ;)
 $config['formats'] = array(
 	array( 'name' => 'MP3 Audio',              'type' => 'audio', 'mime_type' => 'audio/mpeg',  'extension' => 'mp3' ),

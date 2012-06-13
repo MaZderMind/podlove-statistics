@@ -49,10 +49,10 @@ foreach($configfiles as $configfile)
 	// no file no fun
 	if(!is_file($configfile))
 		continue;
-	
+
 	if(!is_readable($configfile))
 		error(1, 'config-file '.$configfile.' exists but is nor readable');
-	
+
 	if(!include($configfile))
 		error(1, 'config-file '.$configfile.' invalid or not includable');
 }
@@ -97,7 +97,7 @@ try {
 catch (PDOException $e)
 {
 	// yup, that database is maiden
-	// create the status table and 
+	// create the status table and
 	echo "initiating empty database\n";
 	$sql = file_get_contents('res/000-before.sql');
 	db()->exec($sql);
@@ -155,6 +155,10 @@ foreach($files as $file)
 			// 10 = referer (opt.)
 			// 11 = agent (opt.)
 
+			// parse the time
+			$dt = DateTime::createFromFormat('d/M/Y:H:i:s O', $m[4]);
+			$time = $dt->getTimestamp();
+
 			// when we're in import-mode, ignore the timestamp
 			if(!$import)
 			{
@@ -163,20 +167,20 @@ foreach($files as $file)
 
 			// split the path up into episode & format
 			$path = pathinfo($m[6]);
-			
+
 			// we won't process files without extension
 			if(!isset($path['extension']))
 				continue;
-			
+
 			$format = $path['extension'];
 			$episode = ltrim($path['dirname'], '/').$path['filename'];
-			
+
 			// skip unknown formats
 			if(!isset($formatLookup[$format]))
 				continue;
-			
+
 			// TODO: maybe use a local in-memory cache?
-			
+
 			// lookup the file id
 			$fileId = $fileLookupStm->executeOne(array($episode, $format));
 			if(!$fileId)
@@ -185,7 +189,9 @@ foreach($files as $file)
 				$fileInsertStm->execute(array($episode, $format));
 				$fileId = db()->lastInsertId();
 			}
-			
+
+			// normalize the id
+			$normtime = $time - ($time % $config['timeinterval']);
 		}
 	}
 
