@@ -179,6 +179,9 @@ foreach($files as $file)
 	fclose($fp);
 }
 
-echo "finishing database (indexes and such)\n";
-$sql = file_get_contents('res/999-after.sql');
-db()->exec($sql);
+if($import)
+{
+	echo "finishing database (indexes and such)\n";
+	$sql = file_get_contents('res/999-after.sql');
+	db()->exec($sql);
+}
