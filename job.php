@@ -107,6 +107,10 @@ catch (PDOException $e)
 	$status = array();
 }
 
+// prepare statements
+$fileLookupStm = db()->prepare('SELECT id FROM files WHERE episode = ? AND format = ?');
+$fileInsertStm = db()->prepare('INSERT INTO files (episode, format) VALUES (?, ?)');
+
 // list of valid extensions for quick lookup
 //  http://blog.straylightrun.net/2008/12/03/tip-of-the-day-codeissetcode-vs-codein_arraycode/
 $formatLookup = array();
@@ -165,14 +169,23 @@ foreach($files as $file)
 				continue;
 			
 			$format = $path['extension'];
-			$episode = $path['dirname'].$path['extension'];;
+			$episode = ltrim($path['dirname'], '/').$path['filename'];
 			
 			// skip unknown formats
 			if(!isset($formatLookup[$format]))
 				continue;
 			
-			// TODO: maybe use a local in-memory cache
-			//$fileID = $fileLookupStm->execute
+			// TODO: maybe use a local in-memory cache?
+			
+			// lookup the file id
+			$fileId = $fileLookupStm->executeOne(array($episode, $format));
+			if(!$fileId)
+			{
+				// a new file, store it
+				$fileInsertStm->execute(array($episode, $format));
+				$fileId = db()->lastInsertId();
+			}
+			
 		}
 	}
 
