@@ -1,6 +1,7 @@
 <?php
 
 require_once 'lib/PhpTemplate.php';
+require_once 'lib/DBCon.php';
 
 // print more or less verbode usage instructions
 // on error or if requestd via command line.
@@ -83,34 +84,34 @@ if(count($files) == 0)
 // last status
 $status = array();
 
-// conenct to the database
-$db = new PDO($config['db']);
+// transfer the database settings to the mighty DBCon class
+DBCon::setConfig($config['db']);
 
 // read the last status information
-$stm = $db->query('SELECT k, v FROM status', PDO::FETCH_ASSOC);
 $import = false;
+try {
+	$status = db()->queryAssoc('SELECT k, v FROM status');
+}
 
 // check for a fresh database
-if(!$stm)
+catch (PDOException $e)
 {
 	// yup, that database is maiden
 	// create the status table and 
 	echo "initiating empty database\n";
 	$sql = file_get_contents('res/000-before.sql');
-	$db->exec($sql);
+	db()->exec($sql);
 
 	echo "running in import-mode\n";
 	$import = true;
-}
-else
-{
-	// read last status
-	foreach($stm as $row)
-	{
-		$status[$row['k']] = $row['v'];
-	}
+	$status = array();
 }
 
+// list of valid extensions for quick lookup
+//  http://blog.straylightrun.net/2008/12/03/tip-of-the-day-codeissetcode-vs-codein_arraycode/
+$formatLookup = array();
+foreach($config['formats'] as $format)
+	$formatLookup[$format['extension']] = true;
 
 // give some hope while we're busy with the files
 echo "scanning ".count($files)." file(s)\n";
@@ -158,7 +159,20 @@ foreach($files as $file)
 
 			// split the path up into episode & format
 			$path = pathinfo($m[6]);
-			print_r($path);
+			
+			// we won't process files without extension
+			if(!isset($path['extension']))
+				continue;
+			
+			$format = $path['extension'];
+			$episode = $path['dirname'].$path['extension'];;
+			
+			// skip unknown formats
+			if(!isset($formatLookup[$format]))
+				continue;
+			
+			// TODO: maybe use a local in-memory cache
+			//$fileID = $fileLookupStm->execute
 		}
 	}
 
@@ -167,4 +181,4 @@ foreach($files as $file)
 
 echo "finishing database (indexes and such)\n";
 $sql = file_get_contents('res/999-after.sql');
-$db->exec($sql);
+db()->exec($sql);
