@@ -1,1 +1,1 @@
-CREATE INDEX stats_normstamp ON stats (normstamp);
+CREATE INDEX stats_normstamp ON stats (norm_stamp);
