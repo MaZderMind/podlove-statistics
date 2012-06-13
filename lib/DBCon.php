@@ -1,10 +1,12 @@
 <?php
 /**
- * @package core
+ * @file
+ * @author Peter Koerner <peter@mazdermind.de>
  */
 
 /**
- * @package core
+ * @class
+ * A mighty database conection class based upon PDO
  */
 class DBCon extends PDO
 {
