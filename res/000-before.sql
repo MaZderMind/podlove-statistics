@@ -4,20 +4,20 @@ CREATE TABLE status (
 );
 
 CREATE TABLE files (
-	id INTEGER,
+	id INTEGER PRIMARY KEY ASC,
 	episode TEXT,
 	format TEXT,
 	sz INTEGER
 );
 
 CREATE TABLE agents (
-	id INTEGER,
+	id INTEGER PRIMARY KEY ASC,
 	os TEXT,
 	app TEXT
 );
 
 CREATE TABLE usernames (
-	id INTEGER,
+	id INTEGER PRIMARY KEY ASC,
 	name TEXT
 );
 
