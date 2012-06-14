@@ -195,6 +195,7 @@ foreach($files as $file)
 
 			// TODO: use a detection-system to recognize different podcatchers, versions, and OSes
 			list($app, $os) = PodcatchIdentify::identify(@$m[11]);
+			echo "$os / $app: $m[11]\n";
 
 			// lookup the agent id
 			// TODO: maybe use a local in-memory cache?
