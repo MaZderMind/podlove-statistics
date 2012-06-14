@@ -2,6 +2,7 @@
 
 require_once 'lib/PhpTemplate.php';
 require_once 'lib/DBCon.php';
+require_once 'lib/PodcatchIdentify.php';
 
 // print more or less verbode usage instructions
 // on error or if requestd via command line.
@@ -31,7 +32,7 @@ if(in_array('--help', $argv) || in_array('--h', $argv))
 }
 
 // check if all required extensions are loaded
-if(!extension_loaded('sqlite3'))
+if(!extension_loaded('sqlite3') && !extension_loaded('pdo_sqlite'))
 {
 	error(1, 'SQLite-Extension is not installed or not loaded');
 }
@@ -110,6 +111,8 @@ catch (PDOException $e)
 // prepare statements
 $fileLookupStm = db()->prepare('SELECT id FROM files WHERE episode = ? AND format = ?');
 $fileInsertStm = db()->prepare('INSERT INTO files (episode, format) VALUES (?, ?)');
+$agentLookupStm = db()->prepare('SELECT id FROM agents WHERE app = ? AND os = ?');
+$agentInsertStm = db()->prepare('INSERT INTO agents (app, os) VALUES (?, ?)');
 
 // list of valid extensions for quick lookup
 //  http://blog.straylightrun.net/2008/12/03/tip-of-the-day-codeissetcode-vs-codein_arraycode/
@@ -121,6 +124,7 @@ foreach($config['formats'] as $format)
 echo "scanning ".count($files)." file(s)\n";
 
 // for each file
+$n = 0;
 foreach($files as $file)
 {
 	// try to open it
@@ -179,15 +183,27 @@ foreach($files as $file)
 			if(!isset($formatLookup[$format]))
 				continue;
 
-			// TODO: maybe use a local in-memory cache?
-
 			// lookup the file id
+			// TODO: maybe use a local in-memory cache?
 			$fileId = $fileLookupStm->executeOne(array($episode, $format));
 			if(!$fileId)
 			{
 				// a new file, store it
 				$fileInsertStm->execute(array($episode, $format));
 				$fileId = db()->lastInsertId();
+			}
+
+			// TODO: use a detection-system to recognize different podcatchers, versions, and OSes
+			list($app, $os) = PodcatchIdentify::identify(@$m[11]);
+
+			// lookup the agent id
+			// TODO: maybe use a local in-memory cache?
+			$agentId = $agentLookupStm->executeOne(array($app, $os));
+			if(!$agentId)
+			{
+				// a new agent, store it
+				$agentInsertStm->execute(array($app, $os));
+				$agentId = db()->lastInsertId();
 			}
 
 			// normalize the id
