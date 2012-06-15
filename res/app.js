@@ -1,22 +1,31 @@
-Ext.require(['Ext.Window', 'Ext.layout.container.Fit', 'Ext.window.MessageBox']);
+Ext.require(['*']);
 
 Ext.onReady(function () {
-	
-	var win = Ext.create('Ext.Window', {
-		width: 800,
-		height: 600,
-		minHeight: 400,
-		minWidth: 550,
-		hidden: false,
-		shadow: false,
-		maximizable: true,
-		renderTo: Ext.getBody(),
-		layout: 'fit',
-		title: 'Test',
+	var viewport = Ext.create('Ext.Viewport', {
+		layout: 'border',
 		items: [
 			{
-				xtype: 'panel',
-				html: 'Test'
+				region: 'north',
+				xtype: 'toolbar',
+				items: [
+					{
+						text: 'Paste',
+						iconCls: 'icon add',
+						cls: 'x-btn-as-arrow'
+					}
+				]
+			}, {
+				region: 'west',
+				title: 'Left',
+				html: 'leftleft',
+				minWidth: 200,
+				
+				collapsible: true,
+				resizeable: true
+			}, {
+				region: 'center',
+				title: 'Center',
+				html: 'centercenter'
 			}
 		]
 	});

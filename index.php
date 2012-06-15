@@ -4,6 +4,7 @@
 		<meta charset="utf-8" />
 		<title>Podlove Statistics</title>
 		<link rel="stylesheet" href="http://extjs.cachefly.net/ext-4.1.0-gpl/resources/css/ext-all.css" type="text/css" />
+		<link rel="stylesheet" href="res/famfamfam/css/famfamfam.css" type="text/css" />
 		<link rel="stylesheet" href="res/app.css" type="text/css" />
 		
 		<script type="text/javascript" src="http://extjs.cachefly.net/ext-4.1.0-gpl/ext-all.js"></script>
