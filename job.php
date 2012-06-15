@@ -127,6 +127,9 @@ foreach($config['formats'] as $format)
 // give some hope while we're busy with the files
 echo "scanning ".count($files)." file(s)\n";
 
+// start transaction
+db()->query('BEGIN');
+
 // for each file
 $n = 0;
 foreach($files as $file)
@@ -251,6 +254,10 @@ foreach($files as $file)
 	fclose($fp);
 }
 
+// start transaction
+db()->query('END');
+
+// create indexes
 if($import)
 {
 	echo "finishing database (indexes and such)\n";
