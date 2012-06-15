@@ -109,10 +109,14 @@ catch (PDOException $e)
 }
 
 // prepare statements
-$fileLookupStm = db()->prepare('SELECT id FROM files WHERE episode = ? AND format = ?');
-$fileInsertStm = db()->prepare('INSERT INTO files (episode, format) VALUES (?, ?)');
+$fileLookupStm  = db()->prepare('SELECT id FROM files WHERE episode = ? AND format = ?');
+$fileInsertStm  = db()->prepare('INSERT INTO files (episode, format) VALUES (?, ?)');
 $agentLookupStm = db()->prepare('SELECT id FROM agents WHERE app = ? AND os = ?');
 $agentInsertStm = db()->prepare('INSERT INTO agents (app, os) VALUES (?, ?)');
+$userLookupStm  = db()->prepare('SELECT id FROM users WHERE name = ?');
+$userInsertStm  = db()->prepare('INSERT INTO users (name) VALUES (?)');
+$countHitStm    = db()->prepare('UPDATE stats SET szsum = szsum + :sz WHERE file = :file AND norm_stamp = :norm_stamp AND agent = :agent AND user = :user');
+$countNewHitStm = db()->prepare('INSERT INTO stats (file, norm_stamp, agent, user, szsum) VALUES (:file, :norm_stamp, :agent, :user, :sz)');
 
 // list of valid extensions for quick lookup
 //  http://blog.straylightrun.net/2008/12/03/tip-of-the-day-codeissetcode-vs-codein_arraycode/
@@ -169,6 +173,10 @@ foreach($files as $file)
 				// TODO: compare timestamps
 			}
 
+			$size = intval($m[9]);
+			if(!$size)
+				continue;
+
 			// split the path up into episode & format
 			$path = pathinfo($m[6]);
 
@@ -193,9 +201,8 @@ foreach($files as $file)
 				$fileId = db()->lastInsertId();
 			}
 
-			// TODO: use a detection-system to recognize different podcatchers, versions, and OSes
+			// detect podcatcher/browser and os
 			list($app, $os) = PodcatchIdentify::identify(@$m[11]);
-			echo "$os / $app: $m[11]\n";
 
 			// lookup the agent id
 			// TODO: maybe use a local in-memory cache?
@@ -207,8 +214,37 @@ foreach($files as $file)
 				$agentId = db()->lastInsertId();
 			}
 
-			// normalize the id
+			// lookup the username id
+			// TODO: maybe use a local in-memory cache?
+			$userId = $userLookupStm->executeOne(array($m[3]));
+			if(!$userId)
+			{
+				// a new agent, store it
+				$userInsertStm->execute(array($m[3]));
+				$userId = db()->lastInsertId();
+			}
+
+			// normalize the timestamp
 			$normtime = $time - ($time % $config['timeinterval']);
+
+			// count a hit
+			$countHitStm->execute(array(
+				'file' => $fileId,
+				'norm_stamp' => $normtime,
+				'agent' => $agentId,
+				'user' => $userId,
+				'sz' => $size,
+			));
+			if($countHitStm->rowCount() == 0)
+			{
+				$countNewHitStm->execute(array(
+					'file' => $fileId,
+					'norm_stamp' => $normtime,
+					'agent' => $agentId,
+					'user' => $userId,
+					'sz' => $size,
+				));
+			}
 		}
 	}
 

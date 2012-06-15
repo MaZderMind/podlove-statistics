@@ -16,16 +16,16 @@ CREATE TABLE agents (
 	app TEXT
 );
 
-CREATE TABLE usernames (
+CREATE TABLE users (
 	id INTEGER PRIMARY KEY ASC,
 	name TEXT
 );
 
 CREATE TABLE stats (
-	file_id INTEGER,
+	file INTEGER,
 	norm_stamp INTEGER,
 	agent INTEGER,
-	username INTEGER,
+	user INTEGER,
 	szsum INTEGER
 );
 

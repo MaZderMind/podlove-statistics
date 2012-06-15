@@ -10,9 +10,6 @@ $config['db']['main'] = array(
 // DSN used to connect to the database
 $config['linelen'] = 1024;
 
-// analyze user names
-$config['processuser'] = false;
-
 // normalize all timestamps using this interval in seconds
 //  a value of 5 minutes instructs the processor to interpret
 //  all requests that happened in an interval of 5 minutes
