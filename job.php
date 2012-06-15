@@ -130,6 +130,9 @@ echo "scanning ".count($files)." file(s)\n";
 // start transaction
 db()->query('BEGIN');
 
+// simple in-memory cache
+$mcache = array();
+
 // for each file
 $n = 0;
 foreach($files as $file)
@@ -176,9 +179,14 @@ foreach($files as $file)
 				// TODO: compare timestamps
 			}
 
+			// requet size
 			$size = intval($m[9]);
 			if(!$size)
 				continue;
+
+			// named variables
+			$user = $m[3];
+			$agent = @$m[11];
 
 			// split the path up into episode & format
 			$path = pathinfo($m[6]);
@@ -195,36 +203,58 @@ foreach($files as $file)
 				continue;
 
 			// lookup the file id
-			// TODO: maybe use a local in-memory cache?
-			$fileId = $fileLookupStm->executeOne(array($episode, $format));
-			if(!$fileId)
+			if(isset($mcache['file'][$episode][$format]))
 			{
-				// a new file, store it
-				$fileInsertStm->execute(array($episode, $format));
-				$fileId = db()->lastInsertId();
+				$fileId = $mcache['file'][$episode][$format];
+			}
+			else
+			{
+				$fileId = $fileLookupStm->executeOne(array($episode, $format));
+				if(!$fileId)
+				{
+					// a new file, store it
+					$fileInsertStm->execute(array($episode, $format));
+					$fileId = db()->lastInsertId();
+				}
+				$mcache['file'][$episode][$format] = $fileId;
 			}
 
 			// detect podcatcher/browser and os
-			list($app, $os) = PodcatchIdentify::identify(@$m[11]);
+			list($app, $os) = PodcatchIdentify::identify($agent);
 
 			// lookup the agent id
-			// TODO: maybe use a local in-memory cache?
-			$agentId = $agentLookupStm->executeOne(array($app, $os));
-			if(!$agentId)
+			if(isset($mcache['agent'][$app][$os]))
 			{
-				// a new agent, store it
-				$agentInsertStm->execute(array($app, $os));
-				$agentId = db()->lastInsertId();
+				$agentId = $mcache['agent'][$app][$os];
+			}
+			else
+			{
+				$agentId = $agentLookupStm->executeOne(array($app, $os));
+				if(!$agentId)
+				{
+					// a new agent, store it
+					$agentInsertStm->execute(array($app, $os));
+					$agentId = db()->lastInsertId();
+				}
+				$mcache['agent'][$app][$os] = $agentId;
 			}
 
 			// lookup the username id
 			// TODO: maybe use a local in-memory cache?
-			$userId = $userLookupStm->executeOne(array($m[3]));
-			if(!$userId)
+			if(isset($mcache['user'][$user]))
 			{
-				// a new agent, store it
-				$userInsertStm->execute(array($m[3]));
-				$userId = db()->lastInsertId();
+				$userId = $mcache['user'][$user];
+			}
+			else
+			{
+				$userId = $userLookupStm->executeOne(array($user));
+				if(!$userId)
+				{
+					// a new agent, store it
+					$userInsertStm->execute(array($user));
+					$userId = db()->lastInsertId();
+				}
+				$mcache['user'][$user] = $userId;
 			}
 
 			// normalize the timestamp
