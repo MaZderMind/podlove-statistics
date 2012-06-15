@@ -152,7 +152,7 @@ class PodcatchIdentify
 			}
 		}
 		
-		return '?';
+		return '-';
 	}
 }
 
