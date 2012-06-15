@@ -1,5 +1,9 @@
 <?php
 
+// ignore requests that don't originate from CLI
+if(php_sapi_name() != 'cli')
+	die('not runnable from !cli');
+
 require_once 'lib/PhpTemplate.php';
 require_once 'lib/DBCon.php';
 require_once 'lib/PodcatchIdentify.php';
