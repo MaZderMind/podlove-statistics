@@ -213,6 +213,7 @@ foreach($files as $file)
 				if(!$fileId)
 				{
 					// a new file, store it
+					// TODO: fetch filesize
 					$fileInsertStm->execute(array($episode, $format));
 					$fileId = db()->lastInsertId();
 				}
@@ -240,7 +241,6 @@ foreach($files as $file)
 			}
 
 			// lookup the username id
-			// TODO: maybe use a local in-memory cache?
 			if(isset($mcache['user'][$user]))
 			{
 				$userId = $mcache['user'][$user];
