@@ -5,26 +5,36 @@ Ext.onReady(function () {
 		layout: 'border',
 		items: [
 			{
-				region: 'north',
-				xtype: 'toolbar',
-				items: [
-					{
-						text: 'Paste',
-						iconCls: 'icon add',
-						cls: 'x-btn-as-arrow'
-					}
-				]
-			}, {
 				region: 'west',
-				title: 'Left',
-				html: 'leftleft',
-				minWidth: 200,
+				title: 'Berichte',
+				width: 200,
 				
 				collapsible: true,
-				resizeable: true
+				resizeable: true,
+				
+				layout: 'fit',
+				xtype: 'panel',
+				items: {
+					layout: 'accordion',
+					items: [
+						{
+							title: 'Gespeicherte Reports',
+							html: 'zoo'
+						}, {
+							title: 'Complete Downloads',
+							html: 'foo'
+						}, {
+							title: 'Podcatcher & Betriebssysteme',
+							html: 'bar'
+						}, {
+							title: 'Benutzernamen',
+							html: 'moo'
+						}
+					]
+				}
 			}, {
 				region: 'center',
-				title: 'Center',
+				title: 'Podlove Statistics',
 				html: 'centercenter'
 			}
 		]
