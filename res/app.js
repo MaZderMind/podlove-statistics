@@ -35,7 +35,51 @@ Ext.onReady(function () {
 			}, {
 				region: 'center',
 				title: 'Podlove Statistics',
-				html: 'centercenter'
+				layout: 'border',
+				
+				items: [
+					{
+						region: 'north',
+						layout: {
+							type: 'hbox',
+							pack: 'center',
+							align: 'top',
+							valign: 'top'
+						},
+						border: 0,
+						items: [
+							{
+								xtype: 'datepicker',
+								margin: 20
+							}, {
+								xtype: 'datepicker',
+								margin: 20
+							}, {
+								xtype: 'menu',
+								margin: 20,
+								floating: false,
+								items: [{
+									text: 'Heute'
+								},{
+									text: 'Gestern'
+								},{
+									text: 'Vorgestern'
+								},{
+									text: 'Die letzten 7 Tage'
+								},{
+									text: 'Die letzte Woche'
+								},{
+									text: 'Dieser Monat'
+								},{
+									text: 'Dieses Jahr'
+								}]
+							}
+						]
+					}, {
+						html: 'centercenter',
+						region: 'center'
+					}
+				]
 			}
 		]
 	});
