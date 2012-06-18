@@ -1,5 +1,9 @@
 Ext.require(['*']);
 
+var
+	minDate = Ext.Date.add(new Date(), Ext.Date.DAY, -7),
+	maxDate = new Date();
+
 Ext.onReady(function () {
 	var viewport = Ext.create('Ext.Viewport', {
 		layout: 'border',
@@ -7,6 +11,7 @@ Ext.onReady(function () {
 			{
 				region: 'west',
 				title: 'Berichte',
+				id: 'reportsPanel',
 				width: 200,
 				
 				collapsible: true,
@@ -50,13 +55,26 @@ Ext.onReady(function () {
 						items: [
 							{
 								xtype: 'datepicker',
-								margin: 20
+								margin: 20,
+								id: 'minDatePicker',
+								value: minDate,
+								maxDate: maxDate,
+								listeners: {
+									select: function(cmp, date) {
+										Ext.getCmp('maxDatePicker').setMinDate(date);
+									}
+								}
 							}, {
 								xtype: 'datepicker',
-								margin: 20
+								margin: 20,
+								id: 'maxDatePicker',
+								value: maxDate,
+								maxDate: maxDate,
+								minDate: minDate
 							}, {
 								xtype: 'menu',
 								margin: 20,
+								id: 'datePickerPresets',
 								floating: false,
 								items: [{
 									text: 'Heute'
@@ -77,7 +95,8 @@ Ext.onReady(function () {
 						]
 					}, {
 						html: 'centercenter',
-						region: 'center'
+						region: 'center',
+						id: 'contentPanel'
 					}
 				]
 			}
