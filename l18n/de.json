@@ -1,0 +1,35 @@
+{
+	"DateRangePicker": {
+		"BeforePrefix": "vor ",
+		"AfterPrefix": "vor ",
+		"DisplayFormat": "j.n.Y",
+
+		"Menu": {
+			"Today": "Heute",
+			"Last7Days": "Letzte 7 Tage",
+			"ThisMonth": "Dieser Monat",
+			"ThisYear": "Dieses Jahr",
+			"AtDate": "Datum",
+			"Before": "Vor",
+			"After": "Nach",
+			"Span": "Zeitraum"
+		}
+	},
+
+	"ReportsPanel": {
+		"Title": "Berichte",
+		"DateRange": "Zeitraum wählen",
+		"Saved": "Gespeicherte Berichte",
+		"Downloads": "Completed Downloads",
+		"Apps": "Podcatcher & Betriebssysteme",
+		"User": "Benutzernamen"
+	},
+
+	"GraphPanel": {
+		"Title": "Podlove Statistics - Podcaststatistik"
+	},
+
+	"TablePanel": {
+		"Title": "Tabellen"
+	}
+}
