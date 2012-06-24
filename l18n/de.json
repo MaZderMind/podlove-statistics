@@ -18,6 +18,15 @@
 
 	"ReportsPanel": {
 		"Title": "Berichte",
+
+		"Chart": {
+			"Areas": "Flächen",
+			"Lines": "Linien",
+			"Pie": "Kuchen",
+			"Bars": "Säulen",
+			"StackBars": "Gestapelte Säulen"
+		},
+
 		"DateRange": "Zeitraum wählen",
 		"Saved": "Gespeicherte Berichte",
 		"Downloads": "Completed Downloads",

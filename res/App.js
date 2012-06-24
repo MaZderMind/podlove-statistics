@@ -45,15 +45,20 @@ Ext.onReady(function () {
 								padding: 10,
 								items: [
 									{
-										text: 'A'
+										text: l18n.ReportsPanel.Chart.Areas,
+										cls: 'icon chart-area'
 									}, {
-										text: 'B'
-									}, {
-										text: 'C'
+										text: l18n.ReportsPanel.Chart.Lines,
+										cls: 'icon chart-line'
 									}, '-', {
-										text: 'Y'
+										text: l18n.ReportsPanel.Chart.Pies,
+										cls: 'icon chart-pie'
 									}, {
-										text: 'Z'
+										text: l18n.ReportsPanel.Chart.Bars,
+										cls: 'icon chart-bar'
+									}, {
+										text: l18n.ReportsPanel.Chart.StackBars,
+										cls: 'icon chart-stackbar'
 									}
 								]
 							}
