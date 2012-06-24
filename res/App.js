@@ -38,7 +38,8 @@ Ext.onReady(function () {
 									editable: false,
 									emptyText: l18n.ReportsPanel.DateRange,
 									padding: 10
-								})
+								}),
+								padding: '0 0 10 0'
 							}, {
 								xtype: 'toolbar',
 								padding: 10,
