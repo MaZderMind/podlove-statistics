@@ -138,15 +138,17 @@ db()->query('BEGIN');
 $mcache = array();
 
 // for each file
-$n = 0;
 foreach($files as $file)
 {
 	// try to open it
-	$fp = @fopen($file, 'r');
+	$fp = @gzopen($file, 'r');
 	if(!$fp)
 	{
 		error(2, 'unable to open file: '.$file);
 	}
+
+	echo "scanning ".$file."\n";
+	$lines = 0;
 
 	// when we're in import-mode, ignore the timestamp
 	if(!$import)
@@ -155,7 +157,7 @@ foreach($files as $file)
 	}
 
 	// scan it
-	while($line = fgets($fp, $config['linelen']))
+	while($line = gzgets($fp, $config['linelen']))
 	{
 		// parse it
 		if(preg_match('@^([^ ]+) ([^ ]+) ([^ ]+) \[([^\]]+)\] "([^ ]+) ([^ ]+) ([^ ]+)" ([^ ]+) ([^ ]+)(?: "([^"]+)" "([^"]+)")?@', $line, $m))
@@ -172,6 +174,8 @@ foreach($files as $file)
 			// 9 = size
 			// 10 = referer (opt.)
 			// 11 = agent (opt.)
+
+			$lines++;
 
 			// parse the time
 			$dt = DateTime::createFromFormat('d/M/Y:H:i:s O', $m[4]);
@@ -285,7 +289,9 @@ foreach($files as $file)
 		}
 	}
 
-	fclose($fp);
+	echo "  read ".$lines." lines\n";
+
+	gzclose($fp);
 }
 
 // start transaction
