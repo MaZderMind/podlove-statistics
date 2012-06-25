@@ -11,8 +11,8 @@ Ext.onReady(function () {
 			{
 				region: 'west',
 				title: l18n.ReportsPanel.Title,
-				width: 250,
-				minWidth: 150,
+				width: 290,
+				minWidth: 290,
 
 				collapsible: true,
 				resizable: true,
@@ -35,6 +35,7 @@ Ext.onReady(function () {
 							{
 								layout: 'fit',
 								items: new DateRangePicker({
+									id: 'reportConfigDateRange',
 									editable: false,
 									emptyText: l18n.ReportsPanel.DateRange,
 									padding: 10
@@ -42,23 +43,31 @@ Ext.onReady(function () {
 								padding: '0 0 10 0'
 							}, {
 								xtype: 'toolbar',
+								id: 'reportConfigChart',
 								padding: 10,
+								defaults: {
+									iconAlign: 'bottom',
+									
+									enableToggle: true,
+									toggleGroup: 'reportConfigChartSelect'
+								},
 								items: [
 									{
 										text: l18n.ReportsPanel.Chart.Areas,
-										cls: 'icon chart-area'
+										iconCls: 'icon chart-area',
+										pressed: true
 									}, {
 										text: l18n.ReportsPanel.Chart.Lines,
-										cls: 'icon chart-line'
+										iconCls: 'icon chart-line'
 									}, '-', {
 										text: l18n.ReportsPanel.Chart.Pies,
-										cls: 'icon chart-pie'
+										iconCls: 'icon chart-pie'
 									}, {
 										text: l18n.ReportsPanel.Chart.Bars,
-										cls: 'icon chart-bar'
+										iconCls: 'icon chart-bar'
 									}, {
 										text: l18n.ReportsPanel.Chart.StackBars,
-										cls: 'icon chart-stackbar'
+										iconCls: 'icon chart-stackbar'
 									}
 								]
 							}

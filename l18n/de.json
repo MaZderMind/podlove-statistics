@@ -22,9 +22,9 @@
 		"Chart": {
 			"Areas": "Flächen",
 			"Lines": "Linien",
-			"Pie": "Kuchen",
+			"Pies": "Kuchen",
 			"Bars": "Säulen",
-			"StackBars": "Gestapelte Säulen"
+			"StackBars": "Stapel"
 		},
 
 		"DateRange": "Zeitraum wählen",
