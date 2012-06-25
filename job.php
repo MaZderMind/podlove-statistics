@@ -41,26 +41,8 @@ if(!extension_loaded('sqlite3') && !extension_loaded('pdo_sqlite'))
 	error(1, 'SQLite-Extension is not installed or not loaded');
 }
 
-// load the configuration
-$config = array();
-$configfiles = array(
-	'./config.php',
-	'/opt/etc/podlove-statistics/config.php',
-	'/usr/local/etc/podlove-statistics/config.php',
-	'/etc/podlove-statistics/config.php',
-);
-foreach($configfiles as $configfile)
-{
-	// no file no fun
-	if(!is_file($configfile))
-		continue;
-
-	if(!is_readable($configfile))
-		error(1, 'config-file '.$configfile.' exists but is nor readable');
-
-	if(!include($configfile))
-		error(1, 'config-file '.$configfile.' invalid or not includable');
-}
+// read all relevant config files
+require 'lib/ConfigReader.php';
 
 // files to parse
 $files = array();
