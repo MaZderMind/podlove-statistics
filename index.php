@@ -4,18 +4,6 @@ require_once 'lib/PhpTemplate.php';
 require_once 'lib/DBCon.php';
 require_once 'lib/ConfigReader.php';
 
-// an error happened
-function exitWithError($title, $msg)
-{
-	$tpl = new PhpTemplate('tpl/error.php');
-	header('HTTP/1.0 500 Internal Server Error');
-	echo $tpl->render(array(
-		'title' => $title,
-		'msg' => $msg,
-	));
-	exit;
-}
-
 // return a chunk of json
 function exitWithJson($data = null)
 {
@@ -26,18 +14,23 @@ function exitWithJson($data = null)
 	exit;
 }
 
+// check for some important php-settings
+if(!ini_get('short_open_tag'))
+	die('The php.ini Directive short_open_tag needs to be set to "On" for the Templating-System to work.');
+
+if(!ini_get('date.timezone'))
+	die('The php.ini Directive date.timezone needs to be set for the date and time calculations to work properly.');
+
 // check if all required extensions are loaded
 if(!extension_loaded('sqlite3') && !extension_loaded('pdo_sqlite'))
-{
-	exitWithError('SQLite-Extension is not installed or not loaded', 'The PHP-Extension that enables Access to SQLite-Databases is not installed. Depending on your system it may be available in your system\'s package manager as php5-sqlite or php5-sqlite3.');
-}
-
-if(!db()) {
-	exitWithError('Database not available', 'The Database that should contain your Statistics is not available. This may be because it doesn\'t exist on the filesystem, because it\'s currupt or locked.');
-}
+	die('The PHP-Extension that enables Access to SQLite-Databases is not installed. Depending on your system it may be available in your system\'s package manager as php5-sqlite or php5-sqlite3.');
 
 // transfer the database settings to the mighty DBCon class
 DBCon::setConfig($config['db']);
+
+// check for the availability of the database and fail early id it can't be accessed
+if(!db())
+	die('The Database that should contain your Statistics is not available. This may be because it doesn\'t exist on the filesystem, because it\'s currupt or locked.');
 
 switch($_GET['get'])
 {
