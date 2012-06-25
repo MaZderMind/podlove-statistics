@@ -32,6 +32,10 @@ if(!extension_loaded('sqlite3') && !extension_loaded('pdo_sqlite'))
 	exitWithError('SQLite-Extension is not installed or not loaded', 'The PHP-Extension that enables Access to SQLite-Databases is not installed. Depending on your system it may be available in your system\'s package manager as php5-sqlite or php5-sqlite3.');
 }
 
+if(!db()) {
+	exitWithError('Database not available', 'The Database that should contain your Statistics is not available. This may be because it doesn\'t exist on the filesystem, because it\'s currupt or locked.');
+}
+
 // transfer the database settings to the mighty DBCon class
 DBCon::setConfig($config['db']);
 
