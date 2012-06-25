@@ -185,8 +185,8 @@ foreach($files as $file)
 			if(!isset($path['extension']))
 				continue;
 
-			$format = $path['extension'];
-			$episode = ltrim($path['dirname'], '/').$path['filename'];
+			$format = strtolower($path['extension']);
+			$episode = strtolower(ltrim($path['dirname'], '/').$path['filename']);
 
 			// skip unknown formats
 			if(!isset($formatLookup[$format]))
