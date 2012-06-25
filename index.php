@@ -36,22 +36,67 @@ switch($_GET['get'])
 {
 	case 'metrics':
 		exitWithJson(array(
-			'files' => db()->queryAll('
+			'episode' => db()->queryCol('
 				SELECT
-					DISTINCT stats.file AS id,
-					files.episode AS e,
-					files.format AS f
+					files.episode
 				FROM
 					stats
 				JOIN
 					files
 				ON
 					files.id = stats.file
+				GROUP BY
+					files.episode
 				ORDER BY
-					stats.norm_stamp
+					MIN(stats.norm_stamp)
 			'),
 
-			'foo' => 'bar',
+			'format' => db()->queryCol('
+				SELECT
+					files.format
+				FROM
+					stats
+				JOIN
+					files
+				ON
+					files.id = stats.file
+				GROUP BY
+					files.format
+				ORDER BY
+					MIN(stats.norm_stamp)
+			'),
+
+			'app' => db()->queryCol('
+				SELECT
+					agents.app
+				FROM
+					stats
+				JOIN
+					agents
+				ON
+					agents.id = stats.agent
+				GROUP BY
+					agents.app
+				ORDER BY
+					MIN(stats.norm_stamp)
+				LIMIT 10
+			'),
+
+			'os' => db()->queryCol('
+				SELECT
+					agents.os
+				FROM
+					stats
+				JOIN
+					agents
+				ON
+					agents.id = stats.agent
+				GROUP BY
+					agents.os
+				ORDER BY
+					MIN(stats.norm_stamp)
+				LIMIT 10
+			'),
 		));
 	break;
 	default:
