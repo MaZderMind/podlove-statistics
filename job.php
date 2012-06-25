@@ -176,7 +176,12 @@ foreach($files as $file)
 
 			// named variables
 			$user = $m[3];
+			$code = intval($m[8]);
 			$agent = @$m[11];
+
+			// ignore errors
+			if($code < 200 || $code > 299)
+				continue; // TODO: record in errors table
 
 			// split the path up into episode & format
 			$path = pathinfo($m[6]);
