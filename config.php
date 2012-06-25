@@ -2,7 +2,7 @@
 
 // DSN used to connect to the database
 $config['db']['main'] = array(
-	'dsn' => 'sqlite:stats.sqlite3',
+	'dsn' => 'sqlite:var/stats.sqlite3',
 	'username' => null,
 	'password' => null,
 );
