@@ -1,4 +1,6 @@
 {
+	"Title": "Podlove Statistics - Podcaststatistik",
+
 	"DateRangePicker": {
 		"BeforePrefix": "vor ",
 		"AfterPrefix": "vor ",
@@ -35,7 +37,7 @@
 	},
 
 	"GraphPanel": {
-		"Title": "Podlove Statistics - Podcaststatistik"
+
 	},
 
 	"TablePanel": {

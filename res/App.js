@@ -1,9 +1,5 @@
 Ext.require(['*']);
 
-var
-	minDate = Ext.Date.add(new Date(), Ext.Date.DAY, -7),
-	maxDate = new Date();
-
 Ext.onReady(function () {
 	var viewport = Ext.create('Ext.Viewport', {
 		layout: 'border',
@@ -11,7 +7,7 @@ Ext.onReady(function () {
 			{
 				region: 'west',
 				title: l18n.ReportsPanel.Title,
-				width: 290,
+				width: 295,
 				minWidth: 290,
 
 				collapsible: true,
@@ -96,7 +92,7 @@ Ext.onReady(function () {
 				]
 			}, {
 				region: 'center',
-				title: l18n.GraphPanel.Title,
+				title: l18n.Title,
 				titleAlign: 'center',
 
 				bodyPadding: 10,
