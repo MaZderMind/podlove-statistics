@@ -32,6 +32,10 @@ DBCon::setConfig($config['db']);
 if(!db())
 	die('The Database that should contain your Statistics is not available. This may be because it doesn\'t exist on the filesystem, because it\'s currupt or locked.');
 
+// date range limits
+$from = isset($_GET['from']) && is_numeric($_GET['from']) ? intval($_GET['from']) : 0;
+$to   = isset($_GET['to'])   && is_numeric($_GET['to'])   ? intval($_GET['to'])   : time()+1;
+
 switch($_GET['get'])
 {
 	case 'metrics':
@@ -45,11 +49,13 @@ switch($_GET['get'])
 					files
 				ON
 					files.id = stats.file
+				WHERE
+					stats.norm_stamp BETWEEN ? AND ?
 				GROUP BY
 					files.episode
 				ORDER BY
 					MIN(stats.norm_stamp)
-			'),
+			', array($from, $to)),
 
 			'format' => db()->queryCol('
 				SELECT
@@ -60,11 +66,13 @@ switch($_GET['get'])
 					files
 				ON
 					files.id = stats.file
+				WHERE
+					stats.norm_stamp BETWEEN ? AND ?
 				GROUP BY
 					files.format
 				ORDER BY
 					MIN(stats.norm_stamp)
-			'),
+			', array($from, $to)),
 
 			'app' => db()->queryCol('
 				SELECT
@@ -75,12 +83,14 @@ switch($_GET['get'])
 					agents
 				ON
 					agents.id = stats.agent
+				WHERE
+					stats.norm_stamp BETWEEN ? AND ?
 				GROUP BY
 					agents.app
 				ORDER BY
 					MIN(stats.norm_stamp)
 				LIMIT 10
-			'),
+			', array($from, $to)),
 
 			'os' => db()->queryCol('
 				SELECT
@@ -91,12 +101,14 @@ switch($_GET['get'])
 					agents
 				ON
 					agents.id = stats.agent
+				WHERE
+					stats.norm_stamp BETWEEN ? AND ?
 				GROUP BY
 					agents.os
 				ORDER BY
 					MIN(stats.norm_stamp)
 				LIMIT 10
-			'),
+			', array($from, $to)),
 		));
 	break;
 	default:
