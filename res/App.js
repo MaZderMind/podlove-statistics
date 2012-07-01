@@ -3,10 +3,28 @@ Ext.require(['*']);
 Ext.onReady(function () {
 	var viewport = Ext.create('Ext.Viewport', {
 		layout: 'border',
+
+		listeners: {
+			afterrender: {
+				single: true,
+				fn: function() {
+					this.reloadMetrics();
+				}
+			}
+		},
+
+		reloadMetrics: function() {
+			var store = Ext.S
+		},
+
 		items: [
 			{
 				region: 'west',
+
+				xtype: 'panel',
+				id: 'metricsPanel',
 				title: l18n.MetricsPanel.Title,
+				
 				width: 295,
 				minWidth: 290,
 
@@ -14,17 +32,53 @@ Ext.onReady(function () {
 				resizable: true,
 				resizeHandles: 'e',
 
-		
-				xtype: 'panel',
-				id: 'reportSelectionPanel',
-				layout: 'accordion',
+				layout:  'accordion',
+
 				items: [
-					{
+					/*{
 						title: l18n.MetricsPanel.Saved,
 						html: 'zoo'
-					}, {
+					},*/ {
+						xtype: 'treepanel',
+						id: 'downloadsMetricsPanel',
 						title: l18n.MetricsPanel.Downloads,
-						html: 'foo'
+						
+						rootVisible: false,
+						
+						store: Ext.create('Ext.data.TreeStore', {
+							storeId: 'downloadsMetrics',
+							root: {
+								expanded: true,
+								children: [
+									{
+										id: 'episode',
+										text: l18n.MetricsPanel.DownloadMetric.Episode,
+										expanded: true,
+										checked: false
+									}, {
+										id: 'format',
+										text: l18n.MetricsPanel.DownloadMetric.Format,
+										expanded: true,
+										checked: false
+									}, {
+										text: l18n.MetricsPanel.DownloadMetric.OS,
+										Apps: 'os',
+										expanded: true,
+										checked: false
+									}, {
+										text: l18n.MetricsPanel.DownloadMetric.App,
+										Apps: 'app',
+										expanded: true,
+										checked: false
+									}, {
+										text: l18n.MetricsPanel.DownloadMetric.Country,
+										Apps: 'country',
+										expanded: true,
+										checked: false
+									}
+								]
+							}
+						})
 					}, {
 						title: l18n.MetricsPanel.Errors,
 						html: 'bar'
@@ -38,11 +92,9 @@ Ext.onReady(function () {
 				bodyPadding: 10,
 				html: 'nice graphs',
 
-				
 				tbar: {
 					defaults: {
-						enableToggle: true,
-						toggleGroup: 'reportConfigChartSelect'
+						enableToggle: true
 					},
 					items: [
 						{
@@ -51,19 +103,33 @@ Ext.onReady(function () {
 						}, '->', {
 							text: l18n.GraphPanel.Toolbar.Areas,
 							iconCls: 'icon chart-area',
-							pressed: true
+							pressed: true,
+							toggleGroup: 'chartSelect'
 						}, {
 							text: l18n.GraphPanel.Toolbar.Lines,
-							iconCls: 'icon chart-line'
+							iconCls: 'icon chart-line',
+							toggleGroup: 'chartSelect'
 						}, '-', {
 							text: l18n.GraphPanel.Toolbar.Pies,
-							iconCls: 'icon chart-pie'
+							iconCls: 'icon chart-pie',
+							toggleGroup: 'chartSelect'
 						}, {
 							text: l18n.GraphPanel.Toolbar.Bars,
-							iconCls: 'icon chart-bar'
+							iconCls: 'icon chart-bar',
+							toggleGroup: 'chartSelect'
 						}, {
 							text: l18n.GraphPanel.Toolbar.StackBars,
-							iconCls: 'icon chart-stackbar'
+							iconCls: 'icon chart-stackbar',
+							toggleGroup: 'chartSelect'
+						}, ' ', '-', ' ', {
+							text: 'Downloads',
+							iconCls: 'icon brick',
+							toggleGroup: 'axisSelect',
+							pressed: true
+						}, {
+							text: 'Bytes',
+							iconCls: 'icon drive-web',
+							toggleGroup: 'axisSelect'
 						}
 					]
 				}

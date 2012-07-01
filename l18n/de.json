@@ -19,6 +19,16 @@
 		"Title": "Metriken",
 		"Saved": "Gespeicherte Berichte",
 		"Downloads": "Completed Downloads",
+		"DownloadMetric": {
+			"Episode": "Episode",
+			"Format": "Dateiformat",
+			"OS": "Betriebssystem",
+			"App": "Programm",
+			"Country": "Land",
+
+			"Unknown": "Unbekannt",
+			"Other": "Sonstiges"
+		},
 		"Errors": "Fehlermeldungen"
 	},
 
