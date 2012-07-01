@@ -1,53 +1,19 @@
-var DateRangePicker = Ext.extend( Ext.form.TriggerField, {
+Ext.define('Ext.ux.form.field.DateRange', {
+	extend: 'Ext.form.TriggerField',
+    alias: 'widget.daterangefield',
+
 	strBefore: l18n.DateRangePicker.BeforePrefix,
 	strAfter: l18n.DateRangePicker.AfterPrefix,
-	storageFormat: 'Y-m-d',
 	displayFormat: l18n.DateRangePicker.DisplayFormat,
-	width: 175,
+	//width: 175,
 	triggerCls: 'x-form-date-trigger',
+	fromDate: null,
+	toDate: null,
 
-	sendParam: function() {
-		var reformat = function (dstr) {
-			return Date.parseDate(dstr.trim(), this.displayFormat).format(this.storageFormat)
-		}.createDelegate(this);
-
-		var str = this.getValue();
-		try {
-			if (str) {
-				var fstr = '', tstr = '', tst;
-				str = str.trim();
-
-				// parse date string
-				if ((tst = str.indexOf('-')) > 0) {
-					// from...to
-					fstr = reformat(str.substring(0, tst));
-					tstr = reformat(str.substring(tst + 1));
-				}
-				else if (str.startsWith(this.strBefore)) {
-					// to
-					tstr = reformat(str.substring(this.strBefore.length));
-				}
-				else if (str.startsWith(this.strAfter)) {
-					// from
-					fstr = reformat(str.substring(this.strAfter.length));
-				}
-				else {
-					// to = from
-					fstr = tstr = reformat(str);
-				};
-				str = '';
-
-				if (fstr) str += 'FROM ' + fstr;
-
-				if (tstr) str += ' TO ' + tstr;
-
-				str = str.trim();
-			};
-		} catch(e){/*who cares?*/}
-
-		return str;
+	getDateRange: function() {
+		return [this.fromDate, this.toDate];
 	},
-
+	
 	onTriggerClick: function() {
 		if(this.disabled){
 			return;
@@ -83,8 +49,10 @@ var DateRangePicker = Ext.extend( Ext.form.TriggerField, {
 					}, {
 						text: l18n.DateRangePicker.Menu.AtDate,
 						menu: {
+							plain: true,
 							items: {
 								xtype: 'datepicker',
+								margins: '10 10 10 10',
 								listeners: {
 									select: Ext.bind(function(p, dt) {
 										this.setValue(format(dt))
@@ -95,11 +63,16 @@ var DateRangePicker = Ext.extend( Ext.form.TriggerField, {
 					}, {
 						text: l18n.DateRangePicker.Menu.Before,
 						menu: {
+							plain: true,
 							items: {
 								xtype: 'datepicker',
+								margins: '10 10 10 10',
 								listeners: {
 									select: Ext.bind(function(p, dt) {
 										this.setValue(this.strBefore + ' ' + format(dt))
+
+										this.fromDate = dt;
+										this.toDate = null;
 									}, this)
 								}
 							}
@@ -107,11 +80,16 @@ var DateRangePicker = Ext.extend( Ext.form.TriggerField, {
 					}, {
 						text: l18n.DateRangePicker.Menu.After,
 						menu: {
+							plain: true,
 							items: {
 								xtype: 'datepicker',
+								margins: '10 10 10 10',
 								listeners: {
 									select: Ext.bind(function(p, dt) {
 										this.setValue(this.strAfter + ' ' + format(dt))
+										
+										this.fromDate = null;
+										this.toDate = dt;
 									}, this)
 								}
 							}
@@ -119,25 +97,40 @@ var DateRangePicker = Ext.extend( Ext.form.TriggerField, {
 					}, {
 						text: l18n.DateRangePicker.Menu.Span,
 						menu: {
+							plain: true,
 							items: {
 								xtype: 'fieldcontainer',
 								layout: 'hbox',
 								items: [
-									this.fromPicker = new Ext.picker.Date({
-										listeners: {
-											select: Ext.bind(function(p, dt) {
-												this.setValue(format(dt) + ' - ' + format(this.toPicker.getValue()))
-											}, this)
-										}
-									}),
-									this.toPicker = new Ext.picker.Date({
+									{
 										xtype: 'datepicker',
+										itemId: 'fromPicker',
+										margins: '10 0 5 10',
 										listeners: {
 											select: Ext.bind(function(p, dt) {
-												this.setValue(format(this.fromPicker.getValue()) + ' - ' + format(dt))
+												var toPicker = p.ownerCt.getComponent('toPicker');
+												toPicker.setMinDate(dt);
+												this.setValue(format(dt) + ' - ' + format(toPicker.getValue()))
+
+												this.fromDate = dt;
+												this.toDate = toPicker.getValue();
 											}, this)
 										}
-									})
+									}, {
+										xtype: 'datepicker',
+										itemId: 'toPicker',
+										margins: '10 10 5 12',
+										listeners: {
+											select: Ext.bind(function(p, dt) {
+												var fromPicker = p.ownerCt.getComponent('fromPicker');
+												fromPicker.setMaxDate(dt);
+												this.setValue(format(fromPicker.getValue()) + ' - ' + format(dt))
+
+												this.fromDate = fromPicker.getValue();
+												this.toDate = dt;
+											}, this)
+										}
+									}
 								]
 							}
 						}
