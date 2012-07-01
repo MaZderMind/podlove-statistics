@@ -112,9 +112,13 @@ switch($_GET['get'])
 		));
 	break;
 	default:
+		$l18n = json_decode(file_get_contents('l18n/de.json'));
+		if(!$l18n)
+			die('There seems to be an error in your Language-File.');
+		
 		$tpl = new PhpTemplate('tpl/index.php');
 		echo $tpl->render(array(
-			'l18n' => json_decode(file_get_contents('l18n/de.json')),
+			'l18n' => $l18n,
 		));
 	break;
 }
