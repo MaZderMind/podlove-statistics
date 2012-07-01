@@ -1,11 +1,9 @@
 {
 	"Title": "Podlove Statistics - Podcaststatistik",
-
 	"DateRangePicker": {
 		"BeforePrefix": "vor ",
 		"AfterPrefix": "vor ",
 		"DisplayFormat": "j.n.Y",
-
 		"Menu": {
 			"Today": "Heute",
 			"Last7Days": "Letzte 7 Tage",
@@ -17,29 +15,24 @@
 			"Span": "Zeitraum"
 		}
 	},
+	"MetricsPanel": {
+		"Title": "Metriken",
+		"Saved": "Gespeicherte Berichte",
+		"Downloads": "Completed Downloads",
+		"Errors": "Fehlermeldungen"
+	},
 
-	"ReportsPanel": {
-		"Title": "Berichte",
+	"GraphPanel": {
+		"Toolbar": {
+			"DateRange": "Zeitraum",
 
-		"Chart": {
 			"Areas": "Flächen",
 			"Lines": "Linien",
 			"Pies": "Kuchen",
 			"Bars": "Säulen",
 			"StackBars": "Stapel"
-		},
-
-		"DateRange": "Zeitraum wählen",
-		"Saved": "Gespeicherte Berichte",
-		"Downloads": "Completed Downloads",
-		"Apps": "Podcatcher & Betriebssysteme",
-		"User": "Benutzernamen"
+		}
 	},
-
-	"GraphPanel": {
-
-	},
-
 	"TablePanel": {
 		"Title": "Tabellen"
 	}
