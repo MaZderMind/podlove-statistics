@@ -216,7 +216,7 @@ foreach($files as $file)
 			}
 
 			// detect podcatcher/browser and os
-			list($app, $os) = PodcatchIdentify::identify($agent);
+			list($os, $app) = PodcatchIdentify::identify($agent);
 
 			// lookup the agent id
 			if(isset($mcache['agent'][$app][$os]))
