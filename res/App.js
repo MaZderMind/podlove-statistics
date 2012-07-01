@@ -4,19 +4,6 @@ Ext.onReady(function () {
 	var viewport = Ext.create('Ext.Viewport', {
 		layout: 'border',
 
-		listeners: {
-			afterrender: {
-				single: true,
-				fn: function() {
-					this.reloadMetrics();
-				}
-			}
-		},
-
-		reloadMetrics: function() {
-			var store = Ext.S
-		},
-
 		items: [
 			{
 				region: 'west',
@@ -47,6 +34,31 @@ Ext.onReady(function () {
 						
 						store: Ext.create('Ext.data.TreeStore', {
 							storeId: 'downloadsMetrics',
+
+							listeners: {
+								load: {
+									single: true,
+									fn: function() {
+										Ext.data.StoreManager.lookup('downloadsMetrics').reloadFromApi();
+									},
+								}
+							},
+							
+							reloadFromApi: function() {
+								var store = Ext.data.StoreManager.lookup('downloadsMetrics');
+								var episode = store.getNodeById('episode');
+								
+								Ext.Ajax.request({
+									url: '.',
+									params: {
+										get: 'metrics'
+									},
+									success: function() {
+										episode.appendChild({text: 'fooo', leaf: true});
+									}
+								});
+							},
+
 							root: {
 								expanded: true,
 								children: [
