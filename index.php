@@ -36,7 +36,7 @@ if(!db())
 $from = isset($_GET['from']) && is_numeric($_GET['from']) ? intval($_GET['from']) : 0;
 $to   = isset($_GET['to'])   && is_numeric($_GET['to'])   ? intval($_GET['to'])   : time()+1;
 
-switch($_GET['get'])
+switch($_REQUEST['get'])
 {
 	case 'metrics':
 		exitWithJson(array(
