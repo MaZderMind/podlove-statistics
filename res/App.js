@@ -6,11 +6,10 @@ Ext.onReady(function () {
 
 		items: [
 			{
-				region: 'west',
-
-				xtype: 'panel',
 				id: 'metricsPanel',
 				title: l18n.MetricsPanel.Title,
+
+				region: 'west',
 
 				width: 295,
 				minWidth: 290,
@@ -64,6 +63,7 @@ Ext.onReady(function () {
 										var node = {
 											text: l18n.MetricsPanel.DownloadMetric[metricGroup],
 											checked: false,
+											expanded: true,
 											children: []
 										};
 
@@ -80,7 +80,7 @@ Ext.onReady(function () {
 
 									var store = Ext.data.StoreManager.lookup('downloadsMetrics');
 									var root = store.getRootNode();
-									root.appendChild(nodes);
+									root.removeAll(true).appendChild(nodes);
 								}
 							});
 						},
@@ -99,12 +99,18 @@ Ext.onReady(function () {
 					}
 				]
 			}, {
+				id: 'graphsPanel',
+
 				region: 'center',
 				title: l18n.Title,
 				titleAlign: 'center',
 
 				bodyPadding: 10,
-				html: 'nice graphs',
+				layout: 'fit',
+
+				items: {
+					xtype: 'weatherlinechart'
+				},
 
 				tbar: {
 					defaults: {
@@ -113,7 +119,13 @@ Ext.onReady(function () {
 					items: [
 						{
 							xtype: 'daterangefield',
-							fieldLabel: l18n.GraphPanel.Toolbar.DateRange
+							fieldLabel: l18n.GraphPanel.Toolbar.DateRange,
+
+							listeners: {
+								change: function(oldValue, newValue) {
+									console.log('changed date to ', newValue);
+								}
+							}
 						}, '->', {
 							text: l18n.GraphPanel.Toolbar.Areas,
 							iconCls: 'icon chart-area',
@@ -146,6 +158,19 @@ Ext.onReady(function () {
 							toggleGroup: 'axisSelect'
 						}
 					]
+				},
+
+				listeners: {
+					afterrender: {
+						single: true,
+						fn: function() {
+							Ext.getCmp('graphsPanel').reloadFromApi();
+						},
+					}
+				},
+
+				reloadFromApi: function() {
+					console.log('reloadFromApi');
 				}
 			}, {
 				region: 'east',

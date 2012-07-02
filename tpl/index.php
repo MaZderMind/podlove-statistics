@@ -10,6 +10,7 @@
 		<script type="text/javascript" src="http://extjs.cachefly.net/ext-4.1.0-gpl/ext-all.js"></script>
 		<script type="text/javascript">var l18n = <?=json_encode($l18n)?>;</script>
 		<script type="text/javascript" src="res/DateRangeField.js"></script>
+		<script type="text/javascript" src="res/Chart.js"></script>
 		<script type="text/javascript" src="res/App.js"></script>
 	</head>
 	<body>
