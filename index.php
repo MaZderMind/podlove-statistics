@@ -111,6 +111,13 @@ switch($_REQUEST['get'])
 			', array($from, $to)),
 		));
 	break;
+	case 'downloads':
+		exitWithJson(array(
+			array('num' => 10, 'date' => time()),
+			array('num' => 15, 'date' => time()+60*60*1),
+			array('num' => 30, 'date' => time()+60*60*2)
+		));
+	break;
 	default:
 		$l18n = json_decode(file_get_contents('l18n/de.json'));
 		if(!$l18n)

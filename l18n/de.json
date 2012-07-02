@@ -41,7 +41,10 @@
 			"Pies": "Kuchen",
 			"Bars": "Säulen",
 			"StackBars": "Stapel"
-		}
+		},
+		"Downloads": "Completed Downloads",
+		"Date": "Datum",
+		"DateFormat": "d.m. G:i \\U\\h\\r"
 	},
 	"TablePanel": {
 		"Title": "Tabellen"

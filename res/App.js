@@ -109,7 +109,7 @@ Ext.onReady(function () {
 				layout: 'fit',
 
 				items: {
-					xtype: 'weatherlinechart'
+					xtype: 'downloadslinechart'
 				},
 
 				tbar: {

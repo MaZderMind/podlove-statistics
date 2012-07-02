@@ -1,52 +1,51 @@
-Ext.define('WeatherPoint', {
-    extend: 'Ext.data.Model',
-    fields: ['temperature', 'date']
+Ext.define('DownloadsPoint', {
+	extend: 'Ext.data.Model',
+	fields: [
+        {name: 'date', type: 'date', dateFormat: 'timestamp'},
+        {name: 'num',  type: 'integer'},
+        'episode', 'format', 'app', 'os'
+    ]
 });
 
 Ext.create('Ext.data.Store', {
-    model: 'WeatherPoint',
-    storeId: 'WeatherStore',
-    data: [
-        { temperature: 62, date: new Date(2011, 1, 1, 0) },
-        { temperature: 50, date: new Date(2011, 1, 1, 2) },
-        { temperature: 80, date: new Date(2011, 1, 1, 4) },
-        { temperature: 82, date: new Date(2011, 1, 1, 6) },
-        { temperature: 58, date: new Date(2011, 1, 1, 8) },
-        { temperature: 63, date: new Date(2011, 1, 1, 9) },
-        { temperature: 73, date: new Date(2011, 1, 1, 10) },
-        { temperature: 78, date: new Date(2011, 1, 1, 11) },
-        { temperature: 81, date: new Date(2011, 1, 1, 12) }
-    ]
+	model: 'DownloadsPoint',
+	storeId: 'DownloadsStore',
+    autoLoad: true,
+	proxy: {
+		type: 'ajax',
+		url : '?get=downloads'
+	}
 });
 
-Ext.define('Ext.ux.chart.WeatherLinechart', {
+Ext.define('Ext.ux.chart.DownloadsLinechart', {
 	extend: 'Ext.chart.Chart',
-	alias: 'widget.weatherlinechart',
+	alias: 'widget.downloadslinechart',
 
-	store: 'WeatherStore',
+	store: 'DownloadsStore',
 	axes: [
-        {
-            title: 'Temperature',
-            type: 'Numeric',
-            position: 'left',
-            fields: ['temperature'],
-            minimum: 0,
+		{
+			title: l18n.GraphPanel.Downloads,
+			type: 'Numeric',
+			position: 'left',
+			fields: ['num'],
+			minimum: 0,
             maximum: 100
-        },
-        {
-            title: 'Time',
-            type: 'Time',
-            position: 'bottom',
-            fields: ['date'],
-            dateFormat: 'ga'
-        }
-    ],
+		}, {
+			title: l18n.GraphPanel.Date,
+			type: 'Time',
+			position: 'bottom',
+			fields: 'date',
+			//groupBy: 'year',
+            //aggregateOp: 'sum',
+			dateFormat: l18n.GraphPanel.DateFormat
+		}
+	],
 
-    series: [
-        {
-            type: 'line',
-            xField: 'date',
-            yField: 'temperature'
-        }
-    ]
+	series: [
+		{
+			type: 'line',
+			xField: 'date',
+			yField: 'num'
+		}
+	]
 });
