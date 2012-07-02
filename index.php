@@ -40,7 +40,7 @@ switch($_REQUEST['get'])
 {
 	case 'metrics':
 		exitWithJson(array(
-			'episode' => db()->queryCol('
+			'Episode' => db()->queryCol('
 				SELECT
 					files.episode
 				FROM
@@ -57,7 +57,7 @@ switch($_REQUEST['get'])
 					MIN(stats.norm_stamp)
 			', array($from, $to)),
 
-			'format' => db()->queryCol('
+			'Format' => db()->queryCol('
 				SELECT
 					files.format
 				FROM
@@ -74,7 +74,7 @@ switch($_REQUEST['get'])
 					MIN(stats.norm_stamp)
 			', array($from, $to)),
 
-			'app' => db()->queryCol('
+			'App' => db()->queryCol('
 				SELECT
 					agents.app
 				FROM
@@ -92,7 +92,7 @@ switch($_REQUEST['get'])
 				LIMIT 10
 			', array($from, $to)),
 
-			'os' => db()->queryCol('
+			'OS' => db()->queryCol('
 				SELECT
 					agents.os
 				FROM

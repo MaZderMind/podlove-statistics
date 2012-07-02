@@ -11,7 +11,7 @@ Ext.onReady(function () {
 				xtype: 'panel',
 				id: 'metricsPanel',
 				title: l18n.MetricsPanel.Title,
-				
+
 				width: 295,
 				minWidth: 290,
 
@@ -29,66 +29,68 @@ Ext.onReady(function () {
 						xtype: 'treepanel',
 						id: 'downloadsMetricsPanel',
 						title: l18n.MetricsPanel.Downloads,
-						
+
 						rootVisible: false,
-						
+
+						listeners: {
+							afterrender: {
+								single: true,
+								fn: function() {
+									Ext.getCmp('downloadsMetricsPanel').reloadFromApi();
+								},
+							}
+						},
+
+						reloadFromApi: function() {
+							var store = Ext.data.StoreManager.lookup('downloadsMetrics');
+							var episode = store.getNodeById('episode');
+
+							Ext.Ajax.request({
+								url: '.',
+								params: {
+									get: 'metrics'
+								},
+								success: function(response, opts) {
+									var res = Ext.decode(response.responseText);
+									var nodes = [];
+
+									Ext.iterate(res, function(metricGroup, metrics) {
+										if(!l18n.MetricsPanel.DownloadMetric[metricGroup])
+											return;
+
+										if(!Ext.isArray(metrics) || metrics.length == 0)
+											return;
+
+										var node = {
+											text: l18n.MetricsPanel.DownloadMetric[metricGroup],
+											checked: false,
+											children: []
+										};
+
+										Ext.iterate(metrics, function(metric) {
+											node.children.push({
+												text: metric,
+												checked: false,
+												leaf: true
+											});
+										});
+
+										nodes.push(node);
+									});
+
+									var store = Ext.data.StoreManager.lookup('downloadsMetrics');
+									var root = store.getRootNode();
+									root.appendChild(nodes);
+								}
+							});
+						},
+
 						store: Ext.create('Ext.data.TreeStore', {
 							storeId: 'downloadsMetrics',
 
-							listeners: {
-								load: {
-									single: true,
-									fn: function() {
-										Ext.data.StoreManager.lookup('downloadsMetrics').reloadFromApi();
-									},
-								}
-							},
-							
-							reloadFromApi: function() {
-								var store = Ext.data.StoreManager.lookup('downloadsMetrics');
-								var episode = store.getNodeById('episode');
-								
-								Ext.Ajax.request({
-									url: '.',
-									params: {
-										get: 'metrics'
-									},
-									success: function() {
-										episode.appendChild({text: 'fooo', leaf: true});
-									}
-								});
-							},
-
 							root: {
 								expanded: true,
-								children: [
-									{
-										id: 'episode',
-										text: l18n.MetricsPanel.DownloadMetric.Episode,
-										expanded: true,
-										checked: false
-									}, {
-										id: 'format',
-										text: l18n.MetricsPanel.DownloadMetric.Format,
-										expanded: true,
-										checked: false
-									}, {
-										text: l18n.MetricsPanel.DownloadMetric.OS,
-										Apps: 'os',
-										expanded: true,
-										checked: false
-									}, {
-										text: l18n.MetricsPanel.DownloadMetric.App,
-										Apps: 'app',
-										expanded: true,
-										checked: false
-									}, {
-										text: l18n.MetricsPanel.DownloadMetric.Country,
-										Apps: 'country',
-										expanded: true,
-										checked: false
-									}
-								]
+								children: []
 							}
 						})
 					}, {
