@@ -96,7 +96,7 @@ catch (PDOException $e)
 
 // prepare statements
 $fileLookupStm  = db()->prepare('SELECT id FROM files WHERE episode = ? AND format = ?');
-$fileInsertStm  = db()->prepare('INSERT INTO files (episode, format) VALUES (?, ?)');
+$fileInsertStm  = db()->prepare('INSERT INTO files (episode, format, sz) VALUES (?, ?, ?)');
 $agentLookupStm = db()->prepare('SELECT id FROM agents WHERE app = ? AND os = ?');
 $agentInsertStm = db()->prepare('INSERT INTO agents (app, os) VALUES (?, ?)');
 $userLookupStm  = db()->prepare('SELECT id FROM users WHERE name = ?');
@@ -166,7 +166,7 @@ foreach($files as $file)
 			// when we're in import-mode, ignore the timestamp
 			if(!$import)
 			{
-				// TODO: compare timestamps
+				die('updates are not yet supported ;)');
 			}
 
 			// requet size
@@ -208,8 +208,11 @@ foreach($files as $file)
 				if(!$fileId)
 				{
 					// a new file, store it
-					// TODO: fetch filesize
-					$fileInsertStm->execute(array($episode, $format));
+					$url = rtrim($config['base'], '/'). $m[6];
+					if(($fileSz = remote_filesize($url)) === 0)
+						echo "  unable to get filesize from $url\n";
+
+					$fileInsertStm->execute(array($episode, $format, $fileSz));
 					$fileId = db()->lastInsertId();
 				}
 				$mcache['file'][$episode][$format] = $fileId;
@@ -290,4 +293,32 @@ if($import)
 	echo "finishing database (indexes and such)\n";
 	$sql = file_get_contents('res/999-after.sql');
 	db()->exec($sql);
+}
+
+function remote_filesize($url)
+{
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_NOBODY, true);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HEADER, true);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+	curl_setopt($ch, CURLOPT_USERAGENT, 'podlove-statistics [https://github.com/MaZderMind/podlove-statistics]');
+	$data = curl_exec($ch);
+	curl_close($ch);
+
+	if ($data === false)
+		return 0;
+
+	$status = 0;
+	if(preg_match('/^HTTP\/1\.[01] (\d\d\d)/i', $data, $matches))
+		$status = (int)$matches[1];
+	
+	if($status != 200)
+		return 0;
+
+	$contentLength = 0;
+	if(preg_match('/Content-Length: (\d+)/i', $data, $matches))
+		$contentLength = (int)$matches[1];
+
+	return $contentLength;
 }

@@ -7,6 +7,11 @@ $config['db']['main'] = array(
 	'password' => null,
 );
 
+// Base-URL of the media-files in the logs
+//  The server is queried for the filesizes of the media-files
+//  in order to calculate the number of complete downloads
+$config['base'] = 'http://audio.podcast.openstreetmap.de/';
+
 // DSN used to connect to the database
 $config['linelen'] = 1024;
 
