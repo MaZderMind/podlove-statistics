@@ -1,9 +1,13 @@
 Ext.define('DownloadsPoint', {
 	extend: 'Ext.data.Model',
 	fields: [
-        {name: 'date', type: 'date', dateFormat: 'timestamp'},
-        {name: 'num',  type: 'integer'},
-        'episode', 'format', 'app', 'os'
+        {name: 'date',    type: 'date', dateFormat: 'timestamp'},
+        {name: 'num',     type: 'integer'},
+        {name: 'szsum',   type: 'integer'},
+        {name: 'episode', type: 'string'},
+        {name: 'format',  type: 'string'},
+        {name: 'app',     type: 'string'},
+        {name: 'os',      type: 'string'}
     ]
 });
 
@@ -27,7 +31,7 @@ Ext.define('Ext.ux.chart.DownloadsLinechart', {
 			title: l18n.GraphPanel.Downloads,
 			type: 'Numeric',
 			position: 'left',
-			fields: ['num'],
+			fields: 'num',
 			minimum: 0,
             maximum: 100
 		}, {
@@ -35,7 +39,7 @@ Ext.define('Ext.ux.chart.DownloadsLinechart', {
 			type: 'Time',
 			position: 'bottom',
 			fields: 'date',
-			//groupBy: 'year',
+			//groupBy: 'day',
             //aggregateOp: 'sum',
 			dateFormat: l18n.GraphPanel.DateFormat
 		}
@@ -43,7 +47,7 @@ Ext.define('Ext.ux.chart.DownloadsLinechart', {
 
 	series: [
 		{
-			type: 'line',
+			type: 'area',
 			xField: 'date',
 			yField: 'num'
 		}

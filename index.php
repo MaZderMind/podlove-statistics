@@ -41,82 +41,58 @@ switch($_REQUEST['get'])
 	case 'metrics':
 		exitWithJson(array(
 			'Episode' => db()->queryCol('
-				SELECT
-					files.episode
-				FROM
-					stats
-				JOIN
-					files
-				ON
-					files.id = stats.file
-				WHERE
-					stats.norm_stamp BETWEEN ? AND ?
-				GROUP BY
-					files.episode
-				ORDER BY
-					MIN(stats.norm_stamp)
+				SELECT files.episode
+				FROM stats
+				JOIN files ON files.id = stats.file
+				WHERE stats.norm_stamp BETWEEN ? AND ?
+				GROUP BY files.episode
+				ORDER BY MIN(stats.norm_stamp)
 			', array($from, $to)),
 
 			'Format' => db()->queryCol('
-				SELECT
-					files.format
-				FROM
-					stats
-				JOIN
-					files
-				ON
-					files.id = stats.file
-				WHERE
-					stats.norm_stamp BETWEEN ? AND ?
-				GROUP BY
-					files.format
-				ORDER BY
-					MIN(stats.norm_stamp)
+				SELECT files.format
+				FROM stats
+				JOIN files ON files.id = stats.file
+				WHERE stats.norm_stamp BETWEEN ? AND ?
+				GROUP BY files.format
+				ORDER BY MIN(stats.norm_stamp)
 			', array($from, $to)),
 
 			'App' => db()->queryCol('
-				SELECT
-					agents.app
-				FROM
-					stats
-				JOIN
-					agents
-				ON
-					agents.id = stats.agent
-				WHERE
-					stats.norm_stamp BETWEEN ? AND ?
-				GROUP BY
-					agents.app
-				ORDER BY
-					MIN(stats.norm_stamp)
-				LIMIT 10
+				SELECT agents.app
+				FROM stats
+				JOIN agents ON agents.id = stats.agent
+				WHERE stats.norm_stamp BETWEEN ? AND ?
+				GROUP BY agents.app
+				ORDER BY MIN(stats.norm_stamp)
 			', array($from, $to)),
 
 			'OS' => db()->queryCol('
-				SELECT
-					agents.os
-				FROM
-					stats
-				JOIN
-					agents
-				ON
-					agents.id = stats.agent
-				WHERE
-					stats.norm_stamp BETWEEN ? AND ?
-				GROUP BY
-					agents.os
-				ORDER BY
-					MIN(stats.norm_stamp)
-				LIMIT 10
+				SELECT agents.os
+				FROM stats
+				JOIN agents
+				ON agents.id = stats.agent
+				WHERE stats.norm_stamp BETWEEN ? AND ?
+				GROUP BY agents.os
+				ORDER BY MIN(stats.norm_stamp)
 			', array($from, $to)),
 		));
 	break;
 	case 'downloads':
-		exitWithJson(array(
-			array('num' => 10, 'date' => time()),
-			array('num' => 15, 'date' => time()+60*60*1),
-			array('num' => 30, 'date' => time()+60*60*2)
-		));
+		exitWithJson(db()->queryAll('
+			SELECT
+				stats.norm_stamp AS date,
+				stats.szsum / files.sz AS num,
+				stats.szsum AS szsum,
+				files.episode AS episode,
+				files.format AS format,
+				agents.os AS os,
+				agents.app AS app
+			FROM stats
+			JOIN files ON files.id = stats.file
+			JOIN agents ON agents.id = stats.agent
+			WHERE stats.norm_stamp BETWEEN ? AND ?
+		', array($from, $to)));
 	break;
 	default:
 		$l18n = json_decode(file_get_contents('l18n/de.json'));
