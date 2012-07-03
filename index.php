@@ -82,16 +82,12 @@ switch($_REQUEST['get'])
 		exitWithJson(db()->queryAll('
 			SELECT
 				stats.norm_stamp AS date,
-				stats.szsum / files.sz AS num,
-				stats.szsum AS szsum,
-				files.episode AS episode,
-				files.format AS format,
-				agents.os AS os,
-				agents.app AS app
+				SUM( CAST(stats.szsum AS REAL) ) AS szsum,
+				SUM( CAST(stats.szsum AS REAL) / CAST( files.sz AS REAL) ) AS num
 			FROM stats
 			JOIN files ON files.id = stats.file
-			JOIN agents ON agents.id = stats.agent
 			WHERE stats.norm_stamp BETWEEN ? AND ?
+			GROUP BY stats.norm_stamp
 		', array($from, $to)));
 	break;
 	default:
