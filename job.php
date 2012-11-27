@@ -217,6 +217,9 @@ foreach($files as $file)
 			if($code < 200 || $code > 299)
 				continue; // TODO: record in errors table
 
+			// normalize starting slash
+			$file = '/'.ltrim($file, '/');
+
 			// optionally map it
 			if(isset($mapping[$file]))
 				$file = $mapping[$file];
