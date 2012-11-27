@@ -17,7 +17,7 @@ Ext.create('Ext.data.Store', {
 	autoLoad: true,
 	proxy: {
 		type: 'ajax',
-		url : '?get=downloads&group=86400'
+		url : '?get=downloads&group='+60*60*24*7
 	}
 });
 
@@ -38,7 +38,7 @@ Ext.define('Ext.ux.chart.DownloadsLinechart', {
 			type: 'Time',
 			position: 'bottom',
 			fields: 'date',
-			dateFormat: l18n.GraphPanel.DateFormat
+			dateFormat: 'd.m.'
 		}
 	],
 
@@ -49,10 +49,14 @@ Ext.define('Ext.ux.chart.DownloadsLinechart', {
 			yField: 'num',
 			tips: {
 				trackMouse: true,
-				width: 80,
-				height: 40,
+				//width: 80,
+				//height: 40,
 				renderer: function(storeItem, item) {
-					this.setTitle(storeItem.get('num'));
+					this.setTitle(Ext.Date.format(
+						storeItem.get('date'),
+						'd.m.'
+					));
+					this.update(storeItem.get('num'));
 				}
 			},
 			style: {
