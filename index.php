@@ -7,10 +7,21 @@ require_once 'lib/ConfigReader.php';
 // return a chunk of json
 function exitWithJson($data = null)
 {
+	// dend a correct mime-type
 	header('Content-Type: application/json');
-	$json = json_encode($data);
-	if($json) json_encode(null);
-	echo $json;
+	
+	// encode the data
+	$json = json_encode($data, JSON_PRETTY_PRINT);
+
+	// send a http-error if we fail
+	if(!$json)
+		header("HTTP/1.0 500 JOSN-Encoding failed");
+
+	// send the data otherwise
+	else
+		echo $json;
+
+	// we're done.
 	exit;
 }
 
@@ -80,16 +91,18 @@ switch($get)
 		));
 	break;
 	case 'downloads':
+		$group = isset($_REQUEST['group']) ? max(1, intval($_REQUEST['group'])) : 1;
 		exitWithJson(db()->queryAll('
 			SELECT
-				stats.norm_stamp AS date,
+				MIN(stats.norm_stamp) AS date,
+				datetime(MIN(stats.norm_stamp), "unixepoch") AS hdate,
 				SUM( CAST(stats.szsum AS REAL) ) AS szsum,
-				SUM( CAST(stats.szsum AS REAL) / CAST( files.sz AS REAL) ) AS num
+				SUM( CAST(stats.szsum AS REAL) / CAST(files.sz AS REAL) ) AS num
 			FROM stats
 			JOIN files ON files.id = stats.file
 			WHERE stats.norm_stamp BETWEEN ? AND ?
-			GROUP BY stats.norm_stamp
-		', array($from, $to)));
+			GROUP BY stats.norm_stamp / ?
+		', array($from, $to, $group)));
 	break;
 	default:
 		$l18n = json_decode(file_get_contents('l18n/de.json'));
