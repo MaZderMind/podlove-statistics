@@ -10,7 +10,7 @@ $config['db']['main'] = array(
 // Base-URL of the media-files in the logs
 //  The server is queried for the filesizes of the media-files
 //  in order to calculate the number of complete downloads
-$config['base'] = 'http://audio.podcast.openstreetmap.de/';
+$config['base'] = 'http://localhost/podlove-statistics/test-data/files/';
 
 // DSN used to connect to the database
 $config['linelen'] = 1024;
