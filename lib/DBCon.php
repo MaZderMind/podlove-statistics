@@ -67,6 +67,7 @@ class DBCon extends PDO
 		}
 		catch (PDOException $e) {
 			error_log('database connection error! '.$e->getMessage());
+			return null;
 		}
 		
 		if(!$forceNew)
