@@ -140,8 +140,8 @@ else {
 	}
 }
 
-print_r($mapping);
-
+// give info about (un)successful mapping load
+echo "loaded ".count($mapping)." mapping entries\n";
 
 // give some hope while we're busy with the files
 echo "scanning ".count($files)." file(s)\n";
