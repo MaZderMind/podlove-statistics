@@ -84,7 +84,7 @@ try {
 catch (PDOException $e)
 {
 	// yup, that database is maiden
-	// create the status table and
+	// run initialisation script
 	echo "initiating empty database\n";
 	$sql = file_get_contents('res/000-before.sql');
 	db()->exec($sql);
@@ -109,6 +109,39 @@ $countNewHitStm = db()->prepare('INSERT INTO stats (file, norm_stamp, agent, use
 $formatLookup = array();
 foreach($config['formats'] as $format)
 	$formatLookup[$format['extension']] = true;
+
+// read mapping table
+if(!isset($config['mapping']))
+	$mapping = array();
+else if(is_array($config['mapping']))
+	$mapping = $config['mapping'];
+else {
+	$mapping = array();
+
+	// oprn the mapping file
+	$fp = @fopen($config['mapping'], 'r');
+
+	// seems not possible
+	if(!$fp) {
+		echo "mapping table ".$config['mapping']." not readable\n";
+	}
+
+	// opened it, now scan it
+	else while($line = fgets($fp)) {
+		// split the line
+		$kv = array_values(array_filter(array_map('trim', explode("\t", $line))));
+
+		// not enough arguments
+		if(count($kv) < 2)
+			continue;
+
+		// save the mappign entries
+		$mapping[$kv[0]] = $kv[1];
+	}
+}
+
+print_r($mapping);
+
 
 // give some hope while we're busy with the files
 echo "scanning ".count($files)." file(s)\n";
@@ -178,13 +211,18 @@ foreach($files as $file)
 			$user = $m[3];
 			$code = intval($m[8]);
 			$agent = @$m[11];
+			$file = $m[6];
 
 			// ignore errors
 			if($code < 200 || $code > 299)
 				continue; // TODO: record in errors table
 
+			// optionally map it
+			if(isset($mapping[$file]))
+				$file = $mapping[$file];
+
 			// split the path up into episode & format
-			$path = pathinfo($m[6]);
+			$path = pathinfo($file);
 
 			// we won't process files without extension
 			if(!isset($path['extension']))
@@ -208,7 +246,7 @@ foreach($files as $file)
 				if(!$fileId)
 				{
 					// a new file, store it
-					$url = rtrim($config['base'], '/'). $m[6];
+					$url = rtrim($config['base'], '/'). $file;
 					if(($fileSz = remote_filesize($url)) === 0)
 						echo "  unable to get filesize from $url\n";
 

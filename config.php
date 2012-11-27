@@ -10,7 +10,14 @@ $config['db']['main'] = array(
 // Base-URL of the media-files in the logs
 //  The server is queried for the filesizes of the media-files
 //  in order to calculate the number of complete downloads
-$config['base'] = 'http://localhost/podlove-statistics/test-data/files/';
+//$config['base'] = 'http://localhost/podlove-statistics/test-data/files/';
+$config['base'] = 'http://audio.podcast.openstreetmap.de/';
+
+// Sometimes you will rename your files, especially in the beginning time
+//  If you did so, you can specify a mapping file here, which is essentially
+//  a tab-seperated file with the old name in the first and the new name in
+//  the second column.
+$config['mapping'] = 'test-data/mapping.tsv';
 
 // DSN used to connect to the database
 $config['linelen'] = 1024;
