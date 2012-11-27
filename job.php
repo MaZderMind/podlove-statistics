@@ -220,22 +220,32 @@ foreach($files as $file)
 			// normalize starting slash
 			$file = '/'.ltrim($file, '/');
 
-			// optionally map it
-			if(isset($mapping[$file]))
-				$file = $mapping[$file];
-
 			// split the path up into episode & format
 			$path = pathinfo($file);
+
+			// normalize pathinfo output
+			$path['dirname'] = ltrim(strtr($path['dirname'], '\\', '/'), '/').'/';
 
 			// we won't process files without extension
 			if(!isset($path['extension']))
 				continue;
 
-			$format = strtolower($path['extension']);
-			$episode = strtolower(ltrim($path['dirname'], '/').$path['filename']);
+			$format = $path['extension'];
+			$episode = ltrim($path['dirname'], '/').$path['filename'];
+
+			// optionally map the episode name
+			if(isset($mapping[$episode]))
+				$episode = $mapping[$episode];
+
+			// re-build a path from the mapped episode name
+			$file = $path['dirname'].$episode.'.'.$format;
 
 			// skip unknown formats
 			if(!isset($formatLookup[$format]))
+				continue;
+
+			// skip known bad files
+			if(isset($mcache['bad'][$file]))
 				continue;
 
 			// lookup the file id
@@ -249,9 +259,12 @@ foreach($files as $file)
 				if(!$fileId)
 				{
 					// a new file, store it
-					$url = rtrim($config['base'], '/'). $file;
-					if(($fileSz = remote_filesize($url)) === 0)
+					$url = rtrim($config['base'], '/').$file;
+					if(($fileSz = remote_filesize($url)) === 0) {
 						echo "  unable to get filesize from $url\n";
+						$mcache['bad'][$file] = true;
+						continue;
+					}
 
 					$fileInsertStm->execute(array($episode, $format, $fileSz));
 					$fileId = db()->lastInsertId();

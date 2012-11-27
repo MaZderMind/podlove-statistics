@@ -15,8 +15,12 @@ $config['base'] = 'http://audio.podcast.openstreetmap.de/';
 
 // Sometimes you will rename your files, especially in the beginning time
 //  If you did so, you can specify a mapping file here, which is essentially
-//  a tab-seperated file with the old name in the first and the new name in
-//  the second column.
+//  a tab-seperated file with the old *episode name* in the first and the 
+//  new *episode name* in the second column.
+//
+//  So if your file was originally named "XXX00-my-title.m4a" and now you're
+//  using "XXX000.m4a" as your filename, the mapping-line should read
+//     "XXX00-my-title		XXX000"
 $config['mapping'] = 'test-data/mapping.tsv';
 
 // DSN used to connect to the database
