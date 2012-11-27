@@ -2,7 +2,7 @@ Ext.define('DownloadsPoint', {
 	extend: 'Ext.data.Model',
 	fields: [
 		{name: 'date',	type: 'date', dateFormat: 'timestamp'},
-		{name: 'num',	 type: 'integer'},
+		{name: 'num',	 type: 'float'},
 		{name: 'szsum',   type: 'integer'},
 		{name: 'episode', type: 'string'},
 		{name: 'format',  type: 'string'},
@@ -17,7 +17,7 @@ Ext.create('Ext.data.Store', {
 	autoLoad: true,
 	proxy: {
 		type: 'ajax',
-		url : '?get=downloads'
+		url : '?get=downloads&group=86400'
 	}
 });
 
@@ -32,15 +32,12 @@ Ext.define('Ext.ux.chart.DownloadsLinechart', {
 			type: 'Numeric',
 			position: 'left',
 			fields: 'num',
-			minimum: 0,
-			maximum: 100
+			minimum: 0
 		}, {
 			title: l18n.GraphPanel.Date,
 			type: 'Time',
 			position: 'bottom',
 			fields: 'date',
-			//groupBy: 'day',
-			//aggregateOp: 'sum',
 			dateFormat: l18n.GraphPanel.DateFormat
 		}
 	],
@@ -48,15 +45,14 @@ Ext.define('Ext.ux.chart.DownloadsLinechart', {
 	series: [
 		{
 			type: 'line',
-			xField: 'date',
+			xField: 'date',	
 			yField: 'num',
 			tips: {
 				trackMouse: true,
 				width: 80,
 				height: 40,
 				renderer: function(storeItem, item) {
-					this.setTitle(storeItem.get('date').toDateString());
-					this.update(storeItem.get('num'));
+					this.setTitle(storeItem.get('num'));
 				}
 			},
 			style: {
