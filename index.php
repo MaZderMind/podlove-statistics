@@ -58,7 +58,7 @@ switch($get)
 				JOIN files ON files.id = stats.file
 				WHERE stats.norm_stamp BETWEEN ? AND ?
 				GROUP BY files.episode
-				ORDER BY MIN(stats.norm_stamp)
+				ORDER BY COUNT(*) DESC
 			', array($from, $to)),
 
 			'Format' => db()->queryCol('
@@ -67,7 +67,7 @@ switch($get)
 				JOIN files ON files.id = stats.file
 				WHERE stats.norm_stamp BETWEEN ? AND ?
 				GROUP BY files.format
-				ORDER BY MIN(stats.norm_stamp)
+				ORDER BY COUNT(*) DESC
 			', array($from, $to)),
 
 			'App' => db()->queryCol('
@@ -76,7 +76,7 @@ switch($get)
 				JOIN agents ON agents.id = stats.agent
 				WHERE stats.norm_stamp BETWEEN ? AND ?
 				GROUP BY agents.app
-				ORDER BY MIN(stats.norm_stamp)
+				ORDER BY COUNT(*) DESC
 			', array($from, $to)),
 
 			'OS' => db()->queryCol('
@@ -86,7 +86,7 @@ switch($get)
 				ON agents.id = stats.agent
 				WHERE stats.norm_stamp BETWEEN ? AND ?
 				GROUP BY agents.os
-				ORDER BY MIN(stats.norm_stamp)
+				ORDER BY COUNT(*) DESC
 			', array($from, $to)),
 		));
 	break;
