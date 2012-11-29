@@ -11,7 +11,10 @@ function exitWithJson($data = null)
 	header('Content-Type: application/json');
 	
 	// encode the data
-	$json = json_encode($data, JSON_PRETTY_PRINT);
+	if(defined('JSON_PRETTY_PRINT'))
+		$json = json_encode($data, JSON_PRETTY_PRINT);
+	else
+		$json = json_encode($data);
 
 	// send a http-error if we fail
 	if(!$json)
