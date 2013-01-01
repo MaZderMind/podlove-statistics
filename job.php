@@ -58,7 +58,14 @@ foreach($argv as $n => $arg)
 	if(substr($arg, 0, 2) == '--')
 		continue;
 
-	$files[] = $arg;
+	if(PHP_OS == 'WIN32' || PHP_OS == 'WINNT' || PHP_OS == 'Windows') {
+		foreach(glob($arg) as $globarg) {
+			$files[] = $globarg;
+		}
+	}
+	else {
+		$files[] = $arg;
+	}
 }
 
 // check for invalid input
