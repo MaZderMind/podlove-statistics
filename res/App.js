@@ -6,8 +6,8 @@ Ext.onReady(function () {
 
 		items: [
 			{
-				id: 'metricsPanel',
-				title: l18n.MetricsPanel.Title,
+				id: 'config-panel',
+				title: 'Einstellungen',
 
 				region: 'west',
 
@@ -18,173 +18,124 @@ Ext.onReady(function () {
 				resizable: true,
 				resizeHandles: 'e',
 
-				layout:  'accordion',
+				layout: {
+					type: 'vbox',
+					align: 'stretch',
+					pack: 'start'
+				},
+				bodyStyle: 'background-color:#DFE8F6',
 
 				items: [
-					/*{
-						title: l18n.MetricsPanel.Saved,
-						html: 'zoo'
-					},*/ {
-						xtype: 'treepanel',
-						id: 'downloadsMetricsPanel',
-						title: l18n.MetricsPanel.Downloads,
+					{
+						xtype: 'combo',
+						id: 'saved-reports',
+						fieldLabel: 'Gespeicherte Berichte',
+						labelAlign: 'top',
 
-						rootVisible: false,
+						margin: '5 5 15 5',
 
-						listeners: {
-							afterrender: {
-								single: true,
-								fn: function() {
-									Ext.getCmp('downloadsMetricsPanel').reloadFromApi();
-								},
-							}
-						},
-
-						reloadFromApi: function() {
-							var store = Ext.data.StoreManager.lookup('downloadsMetrics');
-							var episode = store.getNodeById('episode');
-
-							Ext.Ajax.request({
-								url: '.',
-								params: {
-									get: 'metrics'
-								},
-								success: function(response, opts) {
-									var res = Ext.decode(response.responseText);
-									var nodes = [];
-
-									Ext.iterate(res, function(metricGroup, metrics) {
-										if(!l18n.MetricsPanel.DownloadMetric[metricGroup])
-											return;
-
-										if(!Ext.isArray(metrics) || metrics.length == 0)
-											return;
-
-										var node = {
-											text: l18n.MetricsPanel.DownloadMetric[metricGroup],
-											checked: false,
-											expanded: true,
-											children: []
-										};
-
-										Ext.iterate(metrics, function(metric) {
-											node.children.push({
-												text: metric,
-												checked: false,
-												leaf: true
-											});
-										});
-
-										nodes.push(node);
-									});
-
-									var store = Ext.data.StoreManager.lookup('downloadsMetrics');
-									var root = store.getRootNode();
-									root.removeAll(true).appendChild(nodes);
-								}
-							});
-						},
-
-						store: Ext.create('Ext.data.TreeStore', {
-							storeId: 'downloadsMetrics',
-
-							root: {
-								expanded: true,
-								children: []
-							}
+						valueField: 'id',
+						displayField: 'title',
+						store: Ext.create('Ext.data.ArrayStore', {
+							autoDestroy: true,
+							storeId: 'saved-reports-store',
+							fields: ['id', 'title'],
+							data: [
+								[-1, 'Aktuellen Bericht speichern']
+							]
 						})
 					}, {
-						title: l18n.MetricsPanel.Errors,
-						html: 'bar'
+						xtype: 'tabpanel',
+						id: 'config-tabs',
+						flex: 1,
+						border: false,
+						items: [
+							{
+								title: 'Zeitraum',
+								layout: {
+									type: 'vbox',
+									align: 'stretch',
+									pack: 'start'
+								},
+								defaults: {
+									margin: 10
+								},
+								items: [
+									{
+										xtype: 'daterangefield',
+										fieldLabel: 'Zeitraum',
+										labelAlign: 'top',
+										id: 'date-range'
+									}, {
+										xtype: 'button',
+										text: 'Vergleichszeitraum hinzufügen',
+										textAlign: 'left',
+										iconCls: 'icon add'
+									}, {
+										xtype: 'combo',
+										id: 'resolution',
+										fieldLabel: 'Auflösung',
+										labelAlign: 'top',
+										margin: '50 10 10 10',
+
+										valueField: 'idx',
+										displayField: 'title',
+										store: Ext.create('Ext.data.ArrayStore', {
+											autoDestroy: true,
+											storeId: 'resolution-store',
+											fields: ['idx', 'title', 'groupfmt'],
+											data: [
+												['h', 'Eine Stunde', '%Y%m%d%H'],
+												['d', 'Ein Tag', '%Y%m%d'],
+												['w', 'Eine Woche', '%Y%W'],
+												['m', 'Ein Monat', '%Y%m'],
+												['y', 'Ein Jahr', '%Y']
+											]
+										})
+									}
+								]
+							}, {
+								title: 'Metriken',
+								html: 'This is tab 2 content.'
+							}, {
+								title: 'Darstellung',
+								html: 'This is tab 3 content.'
+							}
+						],
+						bbar: ['->', {
+							id: 'config-tabs-next',
+							text: 'Weiter &raquo;',
+							handler: function() {
+								var
+									tabPanel = Ext.getCmp('config-tabs'),
+									cnt = tabPanel.items.getCount(),
+									idx = tabPanel.items.indexOf(tabPanel.getActiveTab());
+								
+								if(++idx < cnt)
+									tabPanel.setActiveTab(idx);
+							}
+						}],
+						listeners: {
+							tabchange: function() {
+								var
+									tabPanel = Ext.getCmp('config-tabs'),
+									nextBtn = Ext.getCmp('config-tabs-next'),
+									cnt = tabPanel.items.getCount(),
+									idx = tabPanel.items.indexOf(tabPanel.getActiveTab());
+
+								nextBtn.setDisabled(idx == cnt-1);
+							}
+						}
 					}
 				]
 			}, {
-				id: 'graphsPanel',
-
-				region: 'center',
+				id: 'ContentPanel',
 				title: l18n.Title,
 				titleAlign: 'center',
 
-				bodyPadding: 10,
-				layout: 'fit',
-
-				items: {
-					xtype: 'downloadslinechart'
-				},
-
-				tbar: {
-					defaults: {
-						enableToggle: true
-					},
-					items: [
-						{
-							xtype: 'daterangefield',
-							fieldLabel: l18n.GraphPanel.Toolbar.DateRange,
-
-							listeners: {
-								change: function(oldValue, newValue) {
-									console.log('changed date to ', newValue);
-								}
-							}
-						}, '->', {
-							text: l18n.GraphPanel.Toolbar.Areas,
-							iconCls: 'icon chart-area',
-							pressed: true,
-							toggleGroup: 'chartSelect'
-						}, {
-							text: l18n.GraphPanel.Toolbar.Lines,
-							iconCls: 'icon chart-line',
-							toggleGroup: 'chartSelect'
-						}, '-', {
-							text: l18n.GraphPanel.Toolbar.Pies,
-							iconCls: 'icon chart-pie',
-							toggleGroup: 'chartSelect'
-						}, {
-							text: l18n.GraphPanel.Toolbar.Bars,
-							iconCls: 'icon chart-bar',
-							toggleGroup: 'chartSelect'
-						}, {
-							text: l18n.GraphPanel.Toolbar.StackBars,
-							iconCls: 'icon chart-stackbar',
-							toggleGroup: 'chartSelect'
-						}, ' ', '-', ' ', {
-							text: 'Downloads',
-							iconCls: 'icon brick',
-							toggleGroup: 'axisSelect',
-							pressed: true
-						}, {
-							text: 'Bytes',
-							iconCls: 'icon drive-web',
-							toggleGroup: 'axisSelect'
-						}
-					]
-				},
-
-				listeners: {
-					afterrender: {
-						single: true,
-						fn: function() {
-							Ext.getCmp('graphsPanel').reloadFromApi();
-						},
-					}
-				},
-
-				reloadFromApi: function() {
-					console.log('reloadFromApi');
-				}
-			}, {
-				region: 'east',
-				title: l18n.TablePanel.Title,
-				titleAlign: 'center',
-
-				width: '30%',
-				collapsible: true,
-				collapsed: true,
-				floatable: false,
-
-				bodyPadding: 10,
-				html: 'nice tables'
+				region: 'center'
 			}
+			
 		]
 	});
 });

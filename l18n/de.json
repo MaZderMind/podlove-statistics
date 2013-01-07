@@ -1,8 +1,8 @@
 {
 	"Title": "Podlove Statistics - Podcaststatistik",
 	"DateRangePicker": {
-		"BeforePrefix": "vor ",
-		"AfterPrefix": "vor ",
+		"BeforePrefix": "vor",
+		"AfterPrefix": "nach",
 		"DisplayFormat": "j.n.Y",
 		"Menu": {
 			"Today": "Heute",
@@ -15,38 +15,11 @@
 			"Span": "Zeitraum"
 		}
 	},
-	"MetricsPanel": {
-		"Title": "Metriken",
-		"Saved": "Gespeicherte Berichte",
-		"Downloads": "Completed Downloads",
-		"DownloadMetric": {
-			"Episode": "Episode",
-			"Format": "Dateiformat",
-			"OS": "Betriebssystem",
-			"App": "Programm",
-			"Country": "Land",
-
-			"Unknown": "Unbekannt",
-			"Other": "Sonstiges"
-		},
-		"Errors": "Fehlermeldungen"
+	"ConfigPanel": {
+		"Title": "Einstellungen"
 	},
 
 	"GraphPanel": {
-		"Toolbar": {
-			"DateRange": "Zeitraum",
-
-			"Areas": "Flächen",
-			"Lines": "Linien",
-			"Pies": "Kuchen",
-			"Bars": "Säulen",
-			"StackBars": "Stapel"
-		},
-		"Downloads": "Completed Downloads",
-		"Date": "Datum",
-		"DateFormat": "d.m. G:i \\U\\h\\r"
-	},
-	"TablePanel": {
-		"Title": "Tabellen"
+		
 	}
 }
