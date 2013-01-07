@@ -1,8 +1,9 @@
 {
 	"Title": "Podlove Statistics - Podcaststatistik",
 	"DateRangePicker": {
-		"BeforePrefix": "vor",
-		"AfterPrefix": "nach",
+		"BeforePrefix": "vor ",
+		"AfterPrefix": "nach ",
+		"BetweenInfix": " - ",
 		"DisplayFormat": "j.n.Y",
 		"Menu": {
 			"Today": "Heute",
