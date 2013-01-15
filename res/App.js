@@ -65,7 +65,12 @@ Ext.onReady(function () {
 										xtype: 'daterangefield',
 										fieldLabel: 'Zeitraum',
 										labelAlign: 'top',
-										id: 'date-range'
+										id: 'date-range',
+										listeners: {
+											beforeInternalValueChange: function(newValue) {
+												// calculate resolution and comparisons here
+											}
+										}
 									}, {
 										xtype: 'button',
 										text: 'Vergleichszeitraum hinzufügen',
