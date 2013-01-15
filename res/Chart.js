@@ -2,6 +2,7 @@ Ext.define('DownloadsPoint', {
 	extend: 'Ext.data.Model',
 	fields: [
 		{name: 'date',	type: 'date', dateFormat: 'timestamp'},
+		{name: 'hdate',	type: 'string'},
 		{name: 'num',	 type: 'float'},
 		{name: 'szsum',   type: 'integer'},
 		{name: 'episode', type: 'string'},
@@ -35,16 +36,15 @@ Ext.define('Ext.ux.chart.DownloadsLinechart', {
 			minimum: 0
 		}, {
 			title: l18n.GraphPanel.Date,
-			type: 'Time',
+			type: 'Category',
 			position: 'bottom',
-			fields: 'date',
-			dateFormat: 'd.m.'
+			fields: 'hdate'
 		}
 	],
 
 	series: [
 		{
-			type: 'line',
+			type: 'column',
 			xField: 'date',	
 			yField: 'num',
 			tips: {
@@ -61,16 +61,7 @@ Ext.define('Ext.ux.chart.DownloadsLinechart', {
 			},
 			style: {
 				fill: '#38B8BF',
-				stroke: '#38B8BF',
 				'stroke-width': 3
-			},
-			markerConfig: {
-				type: 'circle',
-				size: 4,
-				radius: 4,
-				'stroke-width': 0,
-				fill: '#38B8BF',
-				stroke: '#38B8BF'
 			}
 		}
 	]
